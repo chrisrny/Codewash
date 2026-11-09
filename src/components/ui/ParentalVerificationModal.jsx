@@ -69,7 +69,10 @@ const ParentalVerificationModal = ({ isOpen, onClose, onVerified }) => {
         <div className="fixed inset-0 z-[60] flex items-center justify-center">
             <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={handleClose}></div>
             <div className="relative bg-stone-900 border-4 border-blue-600 rounded-2xl p-8 max-w-md mx-4 shadow-2xl">
-                <button onClick={handleClose} className="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors">
+                <button
+                    onClick={handleClose}
+                    className="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors"
+                >
                     <X size={24} />
                 </button>
                 <div className="flex flex-col items-center text-center">
@@ -88,23 +91,27 @@ const ParentalVerificationModal = ({ isOpen, onClose, onVerified }) => {
                                 autoFocus
                                 maxLength={correctAnswerNoSpaces.length}
                             />
-                            <div className={`flex gap-1 flex-wrap justify-center cursor-pointer ${error ? 'animate-shake' : ''}`}>
-                                {correctAnswer.split('').map((char, i) => (
+                            <div
+                                className={`flex gap-1 flex-wrap justify-center cursor-pointer ${error ? 'animate-shake' : ''}`}
+                            >
+                                {correctAnswer.split('').map((char, i) =>
                                     char === ' ' ? (
                                         <div key={i} className="w-4"></div>
                                     ) : (
                                         <div
                                             key={i}
                                             className={`w-7 h-9 border-b-4 flex items-center justify-center text-lg font-mono font-bold text-white bg-black/20 rounded-t ${
-                                                error ? 'border-red-500 bg-red-900/30' : (
-                                                    isSlotFilled(i) ? 'border-green-500' : 'border-gray-600'
-                                                )
+                                                error
+                                                    ? 'border-red-500 bg-red-900/30'
+                                                    : isSlotFilled(i)
+                                                      ? 'border-green-500'
+                                                      : 'border-gray-600'
                                             }`}
                                         >
                                             {getDisplayChar(i)}
                                         </div>
                                     )
-                                ))}
+                                )}
                             </div>
                         </div>
                         {error && <p className="text-red-400 text-sm mb-4">Incorrect answer. Try again!</p>}

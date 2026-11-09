@@ -10,7 +10,7 @@ const BGM_TRACKS = [
     'assets/sounds/bgm/calm3.wav',
     'assets/sounds/bgm/piano1.wav',
     'assets/sounds/bgm/piano2.wav',
-    'assets/sounds/bgm/piano3.wav'
+    'assets/sounds/bgm/piano3.wav',
 ];
 
 // UI sound paths
@@ -22,62 +22,62 @@ const UI_SOUNDS = {
     fail: 'assets/sounds/ui/fail.wav',
     levelup: 'assets/sounds/ui/levelup.wav',
     notification: 'assets/sounds/ui/notification.wav',
-    successful_hit: 'assets/sounds/ui/successful_hit.wav'
+    successful_hit: 'assets/sounds/ui/successful_hit.wav',
 };
 
 // Mob name to folder name mapping (handles differences between display names and folder names)
 const MOB_FOLDER_MAP = {
     // Hostile mobs
-    'Zombie': 'zombie',
-    'Creeper': 'creeper',
-    'Skeleton': 'skeleton',
-    'Spider': 'spider',
-    'Enderman': 'endermen',
-    'Blaze': 'blaze',
-    'Ghast': 'ghast',
-    'Slime': 'slime',
-    'Phantom': 'phantom',
-    'Piglin': 'piglin',
-    'Hoglin': 'hoglin',
-    'Drowned': 'drowned',
-    'Pillager': 'pillager',
-    'Evoker': 'evoker',
-    'Guardian': 'guardian',
+    Zombie: 'zombie',
+    Creeper: 'creeper',
+    Skeleton: 'skeleton',
+    Spider: 'spider',
+    Enderman: 'endermen',
+    Blaze: 'blaze',
+    Ghast: 'ghast',
+    Slime: 'slime',
+    Phantom: 'phantom',
+    Piglin: 'piglin',
+    Hoglin: 'hoglin',
+    Drowned: 'drowned',
+    Pillager: 'pillager',
+    Evoker: 'evoker',
+    Guardian: 'guardian',
     'Magma Cube': 'magmacube',
-    'Witch': 'witch',
+    Witch: 'witch',
     // Boss mobs
     'Ender Dragon': 'enderdragon',
-    'Wither': 'wither',
-    'Warden': 'warden',
+    Wither: 'wither',
+    Warden: 'warden',
     // Miniboss mobs
     'Elder Guardian': 'elderguardian',
-    'Ravager': 'ravager',
+    Ravager: 'ravager',
     'Wither Skeleton': 'wither_skeleton',
-    'Creaking': 'creaking',
+    Creaking: 'creaking',
     // Friendly mobs
-    'Cat': 'cat',
-    'Chicken': 'chicken',
-    'Cow': 'cow',
-    'Pig': 'pig',
-    'Sheep': 'sheep',
-    'Wolf': 'wolf',
-    'Dolphin': 'dolphin',
-    'Fox': 'fox',
-    'Panda': 'panda',
-    'Parrot': 'parrot',
-    'Horse': 'horse',
-    'Turtle': 'turtle',
-    'Rabbit': 'rabbit',
-    'Bunny': 'rabbit',
-    'Mooshroom': 'mooshroom',
+    Cat: 'cat',
+    Chicken: 'chicken',
+    Cow: 'cow',
+    Pig: 'pig',
+    Sheep: 'sheep',
+    Wolf: 'wolf',
+    Dolphin: 'dolphin',
+    Fox: 'fox',
+    Panda: 'panda',
+    Parrot: 'parrot',
+    Horse: 'horse',
+    Turtle: 'turtle',
+    Rabbit: 'rabbit',
+    Bunny: 'rabbit',
+    Mooshroom: 'mooshroom',
     'Polar Bear': 'polarbear',
-    'Llama': 'llama',
-    'Bat': 'bat',
-    'Bee': 'bee',
-    'Villager': 'villager',
+    Llama: 'llama',
+    Bat: 'bat',
+    Bee: 'bee',
+    Villager: 'villager',
     'Iron Golem': 'irongolem',
     'Wandering Trader': 'wandering_trader',
-    'Strider': 'strider'
+    Strider: 'strider',
 };
 
 // Class for managing BGM playback with shuffle
@@ -99,15 +99,13 @@ class BGMManager {
 
     getRandomTrack() {
         // Get a random track that's different from the current one
-        const availableIndices = this.tracks
-            .map((_, i) => i)
-            .filter(i => i !== this.currentTrackIndex);
-        
+        const availableIndices = this.tracks.map((_, i) => i).filter((i) => i !== this.currentTrackIndex);
+
         // If only one track or no other tracks available, return current
         if (availableIndices.length === 0) {
             return this.currentTrackIndex >= 0 ? this.currentTrackIndex : 0;
         }
-        
+
         const randomIndex = Math.floor(Math.random() * availableIndices.length);
         return availableIndices[randomIndex];
     }
@@ -117,13 +115,13 @@ class BGMManager {
             this.currentTrackIndex = this.getRandomTrack();
             this.audio = new Audio(this.tracks[this.currentTrackIndex]);
             this.audio.volume = this.volume;
-            
+
             // When a track ends, play a new random track
             this.audio.addEventListener('ended', () => {
                 this.playNextTrack();
             });
         }
-        
+
         this.audio.play().catch(() => {});
         this.isPlaying = true;
     }
@@ -179,7 +177,7 @@ export const getSfxVolume = () => sfxVolume;
 export const playUISound = (soundName) => {
     const path = UI_SOUNDS[soundName];
     if (!path) return;
-    
+
     const audio = new Audio(path);
     audio.volume = sfxVolume;
     audio.play().catch(() => {});
@@ -248,7 +246,7 @@ const getMobFolder = (mobName) => {
 export const playMobHurt = (mobName) => {
     const folder = getMobFolder(mobName);
     if (!folder) return;
-    
+
     // Use standardized naming (all files renamed to hurt.wav)
     const audio = new Audio(`assets/sounds/mob/${folder}/hurt.wav`);
     audio.volume = sfxVolume;
@@ -262,7 +260,7 @@ export const playMobHurt = (mobName) => {
 export const playMobDeath = (mobName) => {
     const folder = getMobFolder(mobName);
     if (!folder) return;
-    
+
     // Use standardized naming (all files renamed to death.wav)
     const audio = new Audio(`assets/sounds/mob/${folder}/death.wav`);
     audio.volume = sfxVolume;
@@ -276,7 +274,7 @@ export const playMobDeath = (mobName) => {
 export const playMobSay = (mobName) => {
     const folder = getMobFolder(mobName);
     if (!folder) return;
-    
+
     // Use standardized naming (all files renamed to say.wav)
     const audio = new Audio(`assets/sounds/mob/${folder}/say.wav`);
     audio.volume = sfxVolume;

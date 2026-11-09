@@ -21,7 +21,7 @@ const PhantomEvent = ({ battlingSkillId, onAwardLevel, onPhantomCaught }) => {
         const lastSpawn = parseInt(localStorage.getItem(PHANTOM_COOLDOWN_KEY) || '0', 10);
         const now = Date.now();
         const timeSinceLastSpawn = now - lastSpawn;
-        
+
         // Calculate how long until we can spawn again
         let delay;
         if (timeSinceLastSpawn >= MIN_COOLDOWN_MS) {
@@ -29,7 +29,7 @@ const PhantomEvent = ({ battlingSkillId, onAwardLevel, onPhantomCaught }) => {
             delay = Math.random() * (MAX_COOLDOWN_MS - MIN_COOLDOWN_MS);
         } else {
             // Wait for minimum cooldown plus some random extra time
-            delay = (MIN_COOLDOWN_MS - timeSinceLastSpawn) + Math.random() * (MAX_COOLDOWN_MS - MIN_COOLDOWN_MS);
+            delay = MIN_COOLDOWN_MS - timeSinceLastSpawn + Math.random() * (MAX_COOLDOWN_MS - MIN_COOLDOWN_MS);
         }
 
         if (timeoutRef.current) {
@@ -50,7 +50,7 @@ const PhantomEvent = ({ battlingSkillId, onAwardLevel, onPhantomCaught }) => {
         setFromLeft(startFromLeft);
         setClicked(false);
         setIsActive(true);
-        
+
         // Record spawn time
         localStorage.setItem(PHANTOM_COOLDOWN_KEY, Date.now().toString());
 
@@ -72,22 +72,22 @@ const PhantomEvent = ({ battlingSkillId, onAwardLevel, onPhantomCaught }) => {
     // Handle click on phantom
     const handleClick = useCallback(() => {
         if (clicked) return; // Prevent multiple clicks
-        
+
         setClicked(true);
-        
+
         // Play successful hit sound
         playSuccessfulHit();
-        
+
         // Track phantom caught
         if (onPhantomCaught) {
             onPhantomCaught();
         }
-        
+
         // Award level if skill is active
         if (battlingSkillId) {
             onAwardLevel(battlingSkillId);
         }
-        
+
         // Remove phantom after brief delay for visual feedback
         setTimeout(() => {
             setIsActive(false);
@@ -101,7 +101,7 @@ const PhantomEvent = ({ battlingSkillId, onAwardLevel, onPhantomCaught }) => {
     // Initialize on mount
     useEffect(() => {
         scheduleNextSpawn();
-        
+
         return () => {
             if (timeoutRef.current) {
                 clearTimeout(timeoutRef.current);
