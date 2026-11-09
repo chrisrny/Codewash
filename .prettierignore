@@ -1,0 +1,14 @@
+# Généré / dépendances
+node_modules/
+dist/
+release/
+coverage/
+package-lock.json
+
+# Assets
+public/
+screenshots/
+
+# Markdown exclu pour l'instant : évite de réécrire les tableaux de docs/DEBT.md
+# pendant qu'Arthur travaille dessus (à réactiver plus tard)
+*.md
