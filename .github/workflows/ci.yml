@@ -9,9 +9,16 @@ on:
 permissions:
   contents: read
 
+# Les runners self-hosted sont partagés entre les équipes : un nouveau push annule le run en cours
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   ci:
-    runs-on: ubuntu-latest
+    # Les runners hébergés par GitHub sont bloqués sur l'orga Epitech (facturation),
+    # on passe par les runners self-hosted fournis par l'école
+    runs-on: self-hosted
 
     steps:
       - name: Checkout code

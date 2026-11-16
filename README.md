@@ -30,6 +30,8 @@ Les tests sont dans `tests/` et utilisent [Vitest](https://vitest.dev) avec jsdo
 
 Chaque pull request (et chaque push sur `dev`) lance [`.github/workflows/ci.yml`](.github/workflows/ci.yml) : lint, format, tests + coverage, build. Le rapport de coverage est téléchargeable dans l'onglet Actions (artefact `coverage`). Une PR ne se merge pas si la CI est rouge.
 
+La CI tourne sur les runners self-hosted fournis par Epitech (`runs-on: self-hosted`) : les runners hébergés par GitHub (`ubuntu-latest`) ne démarrent pas sur l'orga, faute de crédits.
+
 Pour lancer les mêmes vérifications en local avant de push :
 
 ```bash
