@@ -12,7 +12,17 @@ export default defineConfig({
             provider: 'v8',
             include: ['src/**/*.{js,jsx}'],
             // text : résumé dans le terminal / html : rapport navigable dans coverage/ / lcov : pour la CI
-            reporter: ['text', 'html', 'lcov'],
+            // json-summary : lu par la CI pour afficher la coverage et les seuils dans le résumé du run
+            reporter: ['text', 'html', 'lcov', 'json-summary'],
+            // Coverage mesurée le 16/11/2026, arrondie à l'inférieur : la CI échoue si elle baisse.
+            // On remonte ces chiffres dès qu'une PR de tests les dépasse, on ne les baisse jamais
+            // sans l'écrire dans docs/DEBT.md.
+            thresholds: {
+                lines: 44,
+                statements: 43,
+                branches: 40,
+                functions: 38,
+            },
         },
     },
 });
