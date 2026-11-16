@@ -58,6 +58,61 @@ main.jsx
 - `src/constants/assets.js` : importé nulle part
 - `src/assets/react.svg` : reste du template Vite, pas utilisé
 
+## 2. Mesures de départ
+
+Mesurées le 16/11/2026 sur `dev` (commit `a0f8772`), avant tout refacto.
+
+### Comment refaire les mesures
+
+| Mesure | Outil | Commande |
+|---|---|---|
+| Taille des fichiers | wc | `find src -name '*.js' -o -name '*.jsx' \| xargs wc -l \| sort -rn` |
+| Coverage | Vitest + @vitest/coverage-v8 | `npm run coverage` |
+| Complexité cyclomatique | ESLint, règle `complexity` | `npx eslint src --rule '{"complexity": ["warn", 10]}'` |
+| Duplication | jscpd | `npx jscpd src` |
+| Lint | ESLint | `npm run lint` |
+
+### Taille des fichiers
+
+24 fichiers JS/JSX dans `src/`, 6938 lignes en tout. Les 3 plus gros font la moitié du code.
+
+| Fichier | Lignes |
+|---|---|
+| `App.jsx` | 1492 |
+| `GlobalStyles.jsx` | 1302 |
+| `SkillCard.jsx` | 778 |
+| `gameData.jsx` | 416 |
+| `gameUtils.js` | 363 |
+| `CosmeticsDrawer.jsx` | 322 |
+
+### Coverage
+
+- Projet reçu : 0 %, il n'y avait aucun test.
+- Avec nos 19 tests de caractérisation : 45,9 % des lignes (43,3 % statements, 40,3 % branches, 38,1 % fonctions).
+- Fichiers importants : `App.jsx` 34 %, `SkillCard.jsx` 45 %, `gameUtils.js` 50 %, `soundManager.js` 41 %.
+
+### Complexité cyclomatique
+
+On prend 10 comme limite. 14 fonctions la dépassent : 5 dans `App.jsx`, 2 dans `SkillCard.jsx`, 2 dans `CosmeticsDrawer.jsx`, 2 dans `gameUtils.js`, 1 dans `MenuDrawer.jsx`, `MobWithAura.jsx` et `ProfileCard.jsx`.
+
+Les 5 pires :
+
+| Où | Fonction | Complexité |
+|---|---|---|
+| `SkillCard.jsx` l.65 | le composant `SkillCard` | 107 |
+| `App.jsx` l.94 | le `forEach` de `loadSkills` | 31 |
+| `MenuDrawer.jsx` l.142 | l'affichage des succès | 27 |
+| `App.jsx` l.569 | le `setSkills` de `handleSuccessHit` | 24 |
+| `CosmeticsDrawer.jsx` l.108 | l'affichage des bordures | 21 |
+
+### Duplication
+
+2,53 % de lignes dupliquées (144 lignes), 6 clones trouvés par jscpd. Le plus gros clone (78 lignes) est entre `MenuDrawer.jsx` et `MenuDrawer_old.jsx`, le vieux fichier pas utilisé (DEBT-12).
+
+### Lint
+
+ESLint : 0 erreur, 0 warning avec la config de base du template Vite.
+
 ## 3. Liste de la dette
 
 | ID | Fichier | Problème | Impact | Risque | Effort | Priorité | Statut |
@@ -66,7 +121,7 @@ main.jsx
 | DEBT-02 | App.jsx, PhantomEvent.jsx | localStorage utilisé partout directement | Haut | Haut | 1 jour | 1 | À faire |
 | DEBT-03 | App.jsx (l.51-52) | JSON.parse sans try/catch, une save cassée fait crash le jeu | Haut | Moyen | 1h | 1 | À faire |
 | DEBT-04 | gameUtils.js, SkillCard.jsx... | Math.random, Date.now et setTimeout en dur, dur à tester | Moyen | Haut | 1 jour | 1 | À faire |
-| DEBT-05 | tout le projet | Pas de tests, pas de CI | Haut | Haut | 2 jours | 1 | À faire |
+| DEBT-05 | tout le projet | Pas de tests, pas de CI | Haut | Haut | 2 jours | 1 | En cours |
 | DEBT-06 | SkillCard.jsx | 778 lignes, les 6 mini-jeux dans le même fichier | Haut | Moyen | 3 jours | 2 | À faire |
 | DEBT-07 | SkillCard.jsx | Des sons joués sans passer par soundManager | Moyen | Moyen | 2h | 2 | À faire |
 | DEBT-08 | soundManager.js, SkillCard.jsx | Erreurs de son ignorées (.catch vide) | Bas | Moyen | 1h | 3 | À faire |
