@@ -20,6 +20,9 @@ export default defineConfig([
         },
         rules: {
             'no-unused-vars': ['error', { varsIgnorePattern: '^[A-Z_]' }],
+            // Même limite que la mesure de départ de docs/DEBT.md. Les 14 fonctions existantes au-dessus
+            // sont tolérées par --max-warnings dans package.json, une nouvelle fait échouer la CI.
+            complexity: ['warn', 10],
         },
     },
 ]);

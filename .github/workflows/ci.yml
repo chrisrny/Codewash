@@ -36,20 +36,39 @@ jobs:
           # Electron ne sert qu'au build .exe (build-exe.yml), inutile de télécharger son binaire ici
           ELECTRON_SKIP_BINARY_DOWNLOAD: '1'
 
-      - name: Lint
+      - name: Lint + complexity (ESLint)
         run: npm run lint
+
+      - name: Duplication (jscpd)
+        run: npm run duplication
 
       - name: Format
         run: npm run format:check
 
-      - name: Tests + coverage
+      - name: Tests + coverage thresholds
         run: npm run coverage
 
+      - name: Coverage summary
+        if: always()
+        run: |
+          [ -f coverage/coverage-summary.json ] || exit 0
+          node --input-type=module >> "$GITHUB_STEP_SUMMARY" <<'EOF'
+          import { readFileSync } from 'node:fs';
+          import config from './vitest.config.js';
+          const total = JSON.parse(readFileSync('coverage/coverage-summary.json')).total;
+          const min = config.test.coverage.thresholds;
+          console.log('| | Coverage | Seuil |\n|---|---:|---:|');
+          for (const k of ['lines', 'statements', 'branches', 'functions'])
+              console.log(`| ${k} | ${total[k].pct} % | ${min[k]} % |`);
+          EOF
+
       - name: Upload coverage report
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: coverage
           path: coverage/
+          if-no-files-found: ignore
 
       - name: Build
         run: npm run build
