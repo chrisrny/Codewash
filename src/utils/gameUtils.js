@@ -1,7 +1,21 @@
-import { HOSTILE_MOBS, FRIENDLY_MOBS, CHEST_BLOCKS, SPECIAL_CHESTS, MINIBOSS_MOBS, BOSS_MOBS, READING_WORDS, FUNNY_LONG_WORDS, SPELLING_ITEMS, DIFFICULTY_CONTENT, BASE_ASSETS, WRITING_WORD_INDEX, WRITING_DIFFICULTY_POOLS } from '../constants/gameData';
+import {
+    HOSTILE_MOBS,
+    FRIENDLY_MOBS,
+    CHEST_BLOCKS,
+    SPECIAL_CHESTS,
+    MINIBOSS_MOBS,
+    BOSS_MOBS,
+    READING_WORDS,
+    FUNNY_LONG_WORDS,
+    SPELLING_ITEMS,
+    DIFFICULTY_CONTENT,
+    BASE_ASSETS,
+    WRITING_WORD_INDEX,
+    WRITING_DIFFICULTY_POOLS,
+} from '../constants/gameData';
 
-export const getRandomMob = (exclude) => { 
-    const pool = Object.keys(HOSTILE_MOBS).filter(m => m !== exclude); 
+export const getRandomMob = (exclude) => {
+    const pool = Object.keys(HOSTILE_MOBS).filter((m) => m !== exclude);
     return pool.length > 0 ? pool[Math.floor(Math.random() * pool.length)] : 'Zombie';
 };
 
@@ -33,47 +47,51 @@ export const getEncounterType = (level) => {
 export const getMobForSkill = (skillConfig, userSkill) => {
     // Cleaning skill is exempt from miniboss cycles - uses original logic
     if (skillConfig.id === 'cleaning') {
-            if (userSkill.level % 20 === 0) return 'Ender Chest';
-            if (userSkill.level % 5 === 0) return 'Shulker Box';
-            const standardChests = Object.keys(CHEST_BLOCKS).filter(k => !SPECIAL_CHESTS.includes(k));
-            return standardChests[(userSkill.level - 1) % standardChests.length];
+        if (userSkill.level % 20 === 0) return 'Ender Chest';
+        if (userSkill.level % 5 === 0) return 'Shulker Box';
+        const standardChests = Object.keys(CHEST_BLOCKS).filter((k) => !SPECIAL_CHESTS.includes(k));
+        return standardChests[(userSkill.level - 1) % standardChests.length];
     }
     // Memory skill: Return stored memoryMob to prevent random changes on re-render
     if (skillConfig.id === 'memory') {
         return userSkill.memoryMob || getRandomFriendlyMob();
     }
-    
+
     // Determine encounter type based on level cycle
     const encounterType = getEncounterType(userSkill.level);
-    
+
     if (encounterType === 'boss') {
         // Return stored boss to prevent random changes on re-render
         return userSkill.currentBoss || getRandomBoss();
     }
-    
+
     if (encounterType === 'miniboss') {
         // Return stored miniboss to prevent random changes on re-render
         return userSkill.currentMiniboss || getRandomMiniboss();
     }
-    
+
     // Combat skills (reading, math, writing, patterns) at hostile mob levels:
     // Return stored mob to prevent random changes on re-render
     const combatSkillMobs = {
-        'reading': userSkill.readingMob,
-        'math': userSkill.mathMob,
-        'writing': userSkill.writingMob,
-        'patterns': userSkill.patternMob
+        reading: userSkill.readingMob,
+        math: userSkill.mathMob,
+        writing: userSkill.writingMob,
+        patterns: userSkill.patternMob,
     };
-    
+
     if (skillConfig.id in combatSkillMobs) {
         return combatSkillMobs[skillConfig.id] || getRandomMob(null);
     }
-    
+
     // Fallback for any other skills
     // Normal hostile mob
     const hostileMobKeys = Object.keys(HOSTILE_MOBS);
     const currentMobIsValid = userSkill.currentMob && hostileMobKeys.includes(userSkill.currentMob);
-    return currentMobIsValid ? userSkill.currentMob : (hostileMobKeys.length > 0 ? hostileMobKeys[Math.floor(Math.random() * hostileMobKeys.length)] : 'Zombie');
+    return currentMobIsValid
+        ? userSkill.currentMob
+        : hostileMobKeys.length > 0
+          ? hostileMobKeys[Math.floor(Math.random() * hostileMobKeys.length)]
+          : 'Zombie';
 };
 
 // ===== RPG Progression Utility Functions =====
@@ -83,9 +101,9 @@ const LEVEL_SCALING_FACTOR = 1.035; // Exponential growth per level (3.5% per le
 const DIFFICULTY_PENALTY_FACTOR = 0.3; // Penalty per difficulty level below expected (70% reduction)
 
 // Base values for difficulty 1 (designed for 5 hits to kill, 1 kill = 1 level)
-const BASE_DAMAGE = 12;      // 5 hits to kill at any level
-const BASE_MOB_HEALTH = 60;  // 5 * BASE_DAMAGE
-const BASE_XP_REWARD = 100;  // 1 kill = 1 level
+const BASE_DAMAGE = 12; // 5 hits to kill at any level
+const BASE_MOB_HEALTH = 60; // 5 * BASE_DAMAGE
+const BASE_XP_REWARD = 100; // 1 kill = 1 level
 const BASE_XP_TO_LEVEL = 100;
 
 // Get difficulty multiplier (3^(difficulty-1))
@@ -121,26 +139,26 @@ export const calculateXPReward = (difficulty, playerLevel) => {
         const baseDifficultyReward = getDifficultyMultiplier(difficulty) * BASE_XP_REWARD;
         return baseDifficultyReward;
     }
-    
+
     const expectedDifficulty = getExpectedDifficulty(playerLevel);
-    
+
     // Base XP scales with player level (same as XP to level)
     const baseXPScaled = BASE_XP_REWARD * Math.pow(LEVEL_SCALING_FACTOR, playerLevel - 1);
-    
+
     // Apply difficulty multiplier
     const difficultyMultiplier = getDifficultyMultiplier(difficulty);
     const fullReward = Math.floor(baseXPScaled * difficultyMultiplier);
-    
+
     // If playing at or above expected difficulty, full reward
     if (difficulty >= expectedDifficulty) {
         return fullReward;
     }
-    
+
     // If playing below expected difficulty, apply exponential penalty
     // The penalty increases dramatically as the gap widens
     const difficultyGap = expectedDifficulty - difficulty;
     const penaltyFactor = Math.pow(DIFFICULTY_PENALTY_FACTOR, difficultyGap);
-    
+
     return Math.floor(fullReward * penaltyFactor);
 };
 
@@ -152,16 +170,16 @@ export const calculateXPToLevel = (difficulty, playerLevel) => {
         const multiplier = getDifficultyMultiplier(difficulty);
         return BASE_XP_TO_LEVEL * multiplier;
     }
-    
+
     const expectedDifficulty = getExpectedDifficulty(playerLevel);
-    
+
     // Base XP requirement grows exponentially with player level
     const baseXPForLevel = BASE_XP_TO_LEVEL * Math.pow(LEVEL_SCALING_FACTOR, playerLevel - 1);
-    
+
     // At expected difficulty, the XP to level should equal the XP from one mob kill
     // This maintains the "1 kill = 1 level" progression on the optimal path
     const expectedDifficultyMultiplier = getDifficultyMultiplier(expectedDifficulty);
-    
+
     return Math.floor(baseXPForLevel * expectedDifficultyMultiplier);
 };
 
@@ -183,7 +201,7 @@ export const getReadingWord = (difficulty) => {
 // Generate a math problem based on difficulty tier
 export const generateMathProblem = (difficulty) => {
     const config = DIFFICULTY_CONTENT.math[difficulty] || DIFFICULTY_CONTENT.math[1];
-    
+
     // Difficulty 7: Nightmare - Extremely complex multi-step PEMDAS expressions
     if (config.nightmare) {
         const nightmareProblems = [
@@ -211,12 +229,12 @@ export const generateMathProblem = (difficulty) => {
             { question: '((100 + 50) ÷ 6 - 5) × 3', answer: '60' },
             { question: '(96 - 36) ÷ 12 + 9 × 7', answer: '68' },
             { question: '((84 ÷ 7 + 18) × 2 - 16) ÷ 4', answer: '11' },
-            { question: '250 - ((18 + 12) × 4 - 25)', answer: '155' }
+            { question: '250 - ((18 + 12) × 4 - 25)', answer: '155' },
         ];
         const problem = nightmareProblems[Math.floor(Math.random() * nightmareProblems.length)];
         return { type: 'math', question: `${problem.question} = ?`, answer: problem.answer, isNightmare: true };
     }
-    
+
     // Difficulty 6: PEMDAS/Order of Operations
     if (config.pemdas) {
         const pemdasProblems = [
@@ -231,19 +249,19 @@ export const generateMathProblem = (difficulty) => {
             { question: '12 ÷ 3 + 5', answer: '9' },
             { question: '2 + 6 ÷ 2', answer: '5' },
             { question: '(8 - 3) × 2', answer: '10' },
-            { question: '4 × 2 - 1', answer: '7' }
+            { question: '4 × 2 - 1', answer: '7' },
         ];
         const problem = pemdasProblems[Math.floor(Math.random() * pemdasProblems.length)];
         return { type: 'math', question: `${problem.question} = ?`, answer: problem.answer, isPemdas: true };
     }
-    
+
     // Difficulties 1-5: Standard operations
     const operations = config.operations || ['+'];
     const [minVal, maxVal] = config.range || [1, 9];
     const operation = operations[Math.floor(Math.random() * operations.length)];
-    
+
     let a, b, question, answer;
-    
+
     switch (operation) {
         case '+':
             a = Math.floor(Math.random() * (maxVal - minVal + 1)) + minVal;
@@ -282,7 +300,7 @@ export const generateMathProblem = (difficulty) => {
             question = `${a} + ${b} = ?`;
             answer = (a + b).toString();
     }
-    
+
     return { type: 'math', question, answer };
 };
 
@@ -294,7 +312,7 @@ export const getWordForDifficulty = (difficulty) => {
     // Map difficulty (1-7) to pool (1-5), with difficulties 6-7 using pool 5
     const poolNumber = Math.min(difficulty, 5);
     const pool = WRITING_DIFFICULTY_POOLS[poolNumber];
-    
+
     if (!pool || pool.length === 0) {
         // Fallback to difficulty 1 pool if something goes wrong
         const fallbackPool = WRITING_DIFFICULTY_POOLS[1];
@@ -302,16 +320,16 @@ export const getWordForDifficulty = (difficulty) => {
         return {
             word: item.word.toUpperCase(),
             displayName: item.displayName,
-            image: item.imagePath
+            image: item.imagePath,
         };
     }
-    
+
     // Select a random word from the pool
     const item = pool[Math.floor(Math.random() * pool.length)];
     return {
         word: item.word.toUpperCase(),
         displayName: item.displayName,
-        image: item.imagePath
+        image: item.imagePath,
     };
 };
 
@@ -320,16 +338,16 @@ export const getWordForDifficulty = (difficulty) => {
 // Returns single item or combination of items
 export const getItemsForLength = (targetLength) => {
     // First, try to find a single item matching the length from the comprehensive index
-    const matchingWords = WRITING_WORD_INDEX.filter(item => item.length === targetLength);
+    const matchingWords = WRITING_WORD_INDEX.filter((item) => item.length === targetLength);
     if (matchingWords.length > 0) {
         const item = matchingWords[Math.floor(Math.random() * matchingWords.length)];
         return {
             items: [{ word: item.word.toUpperCase(), length: item.length }],
             combinedAnswer: item.word.toUpperCase(),
-            images: [item.imagePath]
+            images: [item.imagePath],
         };
     }
-    
+
     // If no single item, try combinations
     // For simplicity, try combining two items
     for (let i = 0; i < SPELLING_ITEMS.length; i++) {
@@ -343,22 +361,22 @@ export const getItemsForLength = (targetLength) => {
                         combinedAnswer: item1.word + item2.word,
                         images: [
                             BASE_ASSETS.items[item1.word] || BASE_ASSETS.items['TNT'],
-                            BASE_ASSETS.items[item2.word] || BASE_ASSETS.items['TNT']
-                        ]
+                            BASE_ASSETS.items[item2.word] || BASE_ASSETS.items['TNT'],
+                        ],
                     };
                 }
             }
         }
     }
-    
+
     // Fallback: return the closest single item from comprehensive index
-    const sortedByLength = [...WRITING_WORD_INDEX].sort((a, b) => 
-        Math.abs(a.length - targetLength) - Math.abs(b.length - targetLength)
+    const sortedByLength = [...WRITING_WORD_INDEX].sort(
+        (a, b) => Math.abs(a.length - targetLength) - Math.abs(b.length - targetLength)
     );
     const fallbackItem = sortedByLength[0];
     return {
         items: [{ word: fallbackItem.word.toUpperCase(), length: fallbackItem.length }],
         combinedAnswer: fallbackItem.word.toUpperCase(),
-        images: [fallbackItem.imagePath]
+        images: [fallbackItem.imagePath],
     };
 };
