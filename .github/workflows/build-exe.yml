@@ -1,18 +1,21 @@
 name: Build Windows EXE
 
+# Une release seulement quand on pousse un tag de version (voir « Publier une version » dans le README),
+# plus un lancement à la main depuis l'onglet Actions pour tester le build sans rien publier.
+# Avant, chaque push sur main créait une release (DEBT-13).
 on:
   push:
-    branches:
-      - main
+    tags:
+      - 'v*'
   workflow_dispatch:
 
 jobs:
   build:
+    # Runner Windows hébergé par GitHub : bloqué sur l'orga Epitech tant que la facturation n'est pas réglée (DEBT-19)
     runs-on: windows-latest
 
     permissions:
-      contents: write # Required for creating releases and uploading assets
-      actions: read # Required for workflow runs
+      contents: write # création de la release
 
     steps:
       - name: Checkout code
@@ -21,7 +24,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '24'
           cache: 'npm'
 
       - name: Install dependencies
@@ -40,12 +43,11 @@ jobs:
           path: release/LevelUpRPG-Portable.exe
           if-no-files-found: error
 
-      - name: Create Release (on main branch push)
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        uses: softprops/action-gh-release@v1
+      - name: Create Release (on version tag)
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
         with:
-          tag_name: v${{ github.run_number }}
-          name: Level Up RPG v${{ github.run_number }}
+          name: Level Up RPG ${{ github.ref_name }}
           body: |
             ## Level Up RPG - Windows Portable Version
 
@@ -63,7 +65,3 @@ jobs:
             2. Double-click to launch
             3. Have fun!
           files: release/LevelUpRPG-Portable.exe
-          draft: false
-          prerelease: false
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

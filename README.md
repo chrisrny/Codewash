@@ -16,6 +16,19 @@ npm run dev
 
 Puis ouvrir http://localhost:5173
 
+## Publier une version
+
+Pousser un tag `v*` lance [`.github/workflows/build-exe.yml`](.github/workflows/build-exe.yml) : il build le `.exe` portable Windows et crée une release GitHub avec.
+
+```bash
+git tag v1.0.0
+git push origin v1.0.0
+```
+
+Pour tester le build sans rien publier : onglet Actions > Build Windows EXE > Run workflow. Le `.exe` est alors dans les artefacts du run.
+
+Pour l'instant ce workflow ne démarre pas : il a besoin d'un runner Windows de GitHub, bloqué sur l'orga Epitech (DEBT-19).
+
 ## Lancer les tests
 
 ```bash
