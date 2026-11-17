@@ -133,14 +133,16 @@ ESLint : 0 erreur, 0 warning avec la config de base du template Vite.
 | DEBT-14 | package.json | 31 vulnérabilités npm et vieilles dépendances | Moyen | Moyen | 1 jour | 2 | À faire |
 | DEBT-15 | BugReportModal.jsx | Le bouton bug report ne fait rien | Moyen | Haut | 1 jour | 2 | À faire |
 | DEBT-16 | App.jsx (micro) | Le micro marche que sur Chrome | Moyen | Moyen | 1 jour | 3 | À faire |
+| DEBT-17 | gameUtils.js (generateMathProblem) | Une soustraction peut donner un résultat négatif (« 0 - 1 = ? ») alors que le code dit l'empêcher. Trouvé par les tests de caractérisation | Moyen | Moyen | 15 min | 2 | À faire |
+| DEBT-18 | gameUtils.js, achievementUtils.js, mobDisplayUtils.js, soundManager.js | Fonctions exportées jamais appelées : `getItemsForLength`, `recordLoginDate` (refaite en double dans App.jsx), `generateMobWithAura`, `playMobSay`, `UI_SOUND_NAMES` | Bas | Bas | 30 min | 3 | À faire |
 
 ## 4. Matrice de risque
 
 | Impact / Probabilité | Basse | Moyenne | Haute |
 |---|---|---|---|
 | Haut | | 03, 06 | 01, 02, 05 |
-| Moyen | 09 | 07, 13, 14, 16 | 04, 10, 11, 15 |
-| Bas | 12 | 08 | |
+| Moyen | 09 | 07, 13, 14, 16, 17 | 04, 10, 11, 15 |
+| Bas | 12, 18 | 08 | |
 
 ## 5. Plan d'attaque
 

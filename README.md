@@ -37,7 +37,7 @@ La CI échoue si une de ces règles casse :
 | Pas d'erreur de lint, au plus 14 warnings (les 14 fonctions trop complexes déjà là) | ESLint, règle `complexity` à 10 | `eslint.config.js`, `--max-warnings` dans `package.json` |
 | Au plus 1,5 % de lignes dupliquées dans `src/` (1,25 % mesuré après le formatage Prettier) | jscpd | script `duplication` dans `package.json` |
 | Code formaté | Prettier | `.prettierrc.json` |
-| Tous les tests passent, coverage au-dessus des seuils (lignes 44 %, statements 43 %, branches 40 %, fonctions 38 %) | Vitest + coverage v8 | `thresholds` dans `vitest.config.js` |
+| Tous les tests passent, coverage au-dessus des seuils (lignes 51 %, statements 51 %, branches 46 %, fonctions 46 %) | Vitest + coverage v8 | `thresholds` dans `vitest.config.js` |
 | Le jeu build | Vite | |
 
 Les seuils ne font que monter : quand une PR améliore la coverage ou retire une fonction trop complexe, on remonte le seuil (ou on baisse `--max-warnings`) dans la même PR. Baisser un seuil, c'est de la dette : on l'écrit dans `docs/DEBT.md` avec la raison.
