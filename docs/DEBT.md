@@ -118,8 +118,8 @@ ESLint : 0 erreur, 0 warning avec la config de base du template Vite.
 | ID | Fichier | Problème | Impact | Risque | Effort | Priorité | Statut |
 |---|---|---|---|---|---|---|---|
 | DEBT-01 | App.jsx | Fichier trop gros (1492 lignes, 32 useState), il fait tout | Haut | Haut | 3 jours | 1 | À faire |
-| DEBT-02 | App.jsx, PhantomEvent.jsx | localStorage utilisé partout directement | Haut | Haut | 1 jour | 1 | À faire |
-| DEBT-03 | App.jsx (l.51-52) | JSON.parse sans try/catch, une save cassée fait crash le jeu | Haut | Moyen | 1h | 1 | À faire |
+| DEBT-02 | App.jsx, PhantomEvent.jsx | localStorage utilisé partout directement | Haut | Haut | 1 jour | 1 | Fini (tout passe par `src/services/storage.js`) |
+| DEBT-03 | App.jsx (l.51-52) | JSON.parse sans try/catch, une save cassée fait crash le jeu | Haut | Moyen | 1h | 1 | Fini (`try/catch` dans `storage.js`, testé) |
 | DEBT-04 | gameUtils.js, SkillCard.jsx... | Math.random, Date.now et setTimeout en dur, dur à tester | Moyen | Haut | 1 jour | 1 | À faire |
 | DEBT-05 | tout le projet | Pas de tests, pas de CI | Haut | Haut | 2 jours | 1 | En cours |
 | DEBT-06 | SkillCard.jsx | 778 lignes, les 6 mini-jeux dans le même fichier | Haut | Moyen | 3 jours | 2 | À faire |
