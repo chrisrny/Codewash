@@ -129,11 +129,20 @@ describe('sauvegarde', () => {
         expect(save.theme).toBe('minecraft');
     });
 
-    it('noms de profils cassés : le jeu plante (DEBT-03)', async () => {
-        // React affiche l'erreur dans la console, on la cache
-        vi.spyOn(console, 'error').mockImplementation(() => {});
+    // Avant le refacto, ce test vérifiait que le jeu plantait (DEBT-03)
+    it('noms de profils cassés : le jeu ne plante plus et remet les noms par défaut', async () => {
         localStorage.setItem('heroProfileNames_v1', '{pas du json');
 
-        await expect(renderApp()).rejects.toThrow(SyntaxError);
+        await renderApp();
+
+        expect(readSave('heroProfileNames_v1')).toEqual({ 1: 'Player 1', 2: 'Player 2', 3: 'Player 3' });
+    });
+
+    it('statut parent cassé : le jeu ne plante plus non plus', async () => {
+        localStorage.setItem('heroParentStatus_v1', '{pas du json');
+
+        await renderApp();
+
+        expect(readSave('heroParentStatus_v1')).toEqual({ 1: false, 2: false, 3: false });
     });
 });
