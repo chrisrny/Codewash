@@ -694,7 +694,7 @@ const SkillCard = ({
                                                 );
                                             })}
                                         </div>
-                                        {!simonGameActive && completedRounds > 0 && (
+                                        {!simonGameActive && (
                                             <div className="flex flex-col items-center gap-3">
                                                 <div className="text-red-400 text-lg font-bold animate-pulse">
                                                     Game Over! Rounds: {completedRounds}

@@ -14,14 +14,14 @@ export default defineConfig({
             // text : résumé dans le terminal / html : rapport navigable dans coverage/ / lcov : pour la CI
             // json-summary : lu par la CI pour afficher la coverage et les seuils dans le résumé du run
             reporter: ['text', 'html', 'lcov', 'json-summary'],
-            // Coverage mesurée le 16/11/2026 après les tests de src/utils, arrondie à l'inférieur :
+            // Coverage mesurée le 17/11/2026 après les tests des mini-jeux, arrondie à l'inférieur :
             // la CI échoue si elle baisse. On remonte ces chiffres dès qu'une PR de tests les dépasse,
             // on ne les baisse jamais sans l'écrire dans docs/DEBT.md.
             thresholds: {
-                lines: 51,
-                statements: 51,
-                branches: 46,
-                functions: 46,
+                lines: 63,
+                statements: 62,
+                branches: 58,
+                functions: 57,
             },
         },
     },
