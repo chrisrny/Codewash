@@ -1,4 +1,5 @@
 // Mob display utilities for aura generation
+import { pickRandom } from '../services/random';
 
 // Available aura types
 const AURA_TYPES = ['rainbow', 'frost', 'shadow', 'lava', 'gradient', 'sparkle', 'plasma', 'nature'];
@@ -20,7 +21,7 @@ export const AURA_ADJECTIVES = {
  * @returns {string} Random aura type from AURA_TYPES
  */
 export const getRandomAura = () => {
-    return AURA_TYPES[Math.floor(Math.random() * AURA_TYPES.length)];
+    return pickRandom(AURA_TYPES);
 };
 
 /**
