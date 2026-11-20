@@ -14,6 +14,7 @@ Chaque PR ajoute sa ligne ici, dans la même PR.
 
 ### Ajouté
 
+- `docs/SAVE_FORMAT.md` : le contrat du format de sauvegarde, avec `tests/save-format.test.jsx` qui casse si le format change (DEBT-02, #34)
 - `docs/TESTS.md` : la stratégie de tests, quel test fige quel flux critique (DEBT-05, #33)
 - 39 tests de caractérisation des 6 mini-jeux de `SkillCard.jsx` (DEBT-05, #32)
 - `CHANGELOG.md` avec toutes les PR depuis le début (#31)
