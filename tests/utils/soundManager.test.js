@@ -40,6 +40,7 @@ beforeEach(async () => {
 });
 
 afterEach(() => {
+    sound.resetSoundManagerDependencies();
     vi.unstubAllGlobals();
     vi.restoreAllMocks();
 });
@@ -47,6 +48,19 @@ afterEach(() => {
 const lastAudio = () => FakeAudio.created.at(-1);
 
 describe("sons de l'interface", () => {
+    it('Audio et le hasard sont injectables', () => {
+        const createAudio = vi.fn((src) => new FakeAudio(src));
+        const random = vi.fn(() => 0);
+        sound.configureSoundManager({ createAudio, random });
+
+        sound.playClick();
+        expect(createAudio).toHaveBeenCalledWith('assets/sounds/ui/click.wav');
+
+        sound.getBGMManager().play();
+        expect(random).toHaveBeenCalledOnce();
+        expect(createAudio).toHaveBeenCalledWith('assets/sounds/bgm/calm1.wav');
+    });
+
     it('chaque raccourci joue son fichier', () => {
         const cases = [
             [sound.playClick, 'click'],
