@@ -77,6 +77,8 @@ import {
     loadBorderColor,
     saveBorder,
 } from './services/storage';
+import { random } from './services/random';
+import { getToday } from './services/clock';
 
 // Parent verification privilege constants
 const PARENT_PRIVILEGE_LEVEL = 200;
@@ -565,7 +567,7 @@ const App = () => {
             const id = ++damageIdRef.current;
             setDamageNumbers((prev) => [
                 ...prev,
-                { id, skillId, val: actualDamage, x: Math.random() * 100 - 50, y: Math.random() * 50 - 25 },
+                { id, skillId, val: actualDamage, x: random() * 100 - 50, y: random() * 50 - 25 },
             ]);
             setTimeout(() => setDamageNumbers((prev) => prev.filter((n) => n.id !== id)), 800);
 
@@ -1129,7 +1131,7 @@ const App = () => {
         if (loginTrackedRef.current) return; // Skip if already tracked
         loginTrackedRef.current = true;
 
-        const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD format
+        const today = getToday(); // YYYY-MM-DD format
         const currentDates = stats.loginDates || [];
         // Only set if today's date is not already recorded
         if (!currentDates.includes(today)) {

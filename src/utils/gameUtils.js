@@ -13,26 +13,27 @@ import {
     WRITING_WORD_INDEX,
     WRITING_DIFFICULTY_POOLS,
 } from '../constants/gameData';
+import { randomInt, pickRandom } from '../services/random';
 
 export const getRandomMob = (exclude) => {
     const pool = Object.keys(HOSTILE_MOBS).filter((m) => m !== exclude);
-    return pool.length > 0 ? pool[Math.floor(Math.random() * pool.length)] : 'Zombie';
+    return pool.length > 0 ? pickRandom(pool) : 'Zombie';
 };
 
 // Get a random friendly mob key for the Memory skill
 export const getRandomFriendlyMob = () => {
     const friendlyMobKeys = Object.keys(FRIENDLY_MOBS);
-    return friendlyMobKeys.length > 0 ? friendlyMobKeys[Math.floor(Math.random() * friendlyMobKeys.length)] : 'Allay';
+    return friendlyMobKeys.length > 0 ? pickRandom(friendlyMobKeys) : 'Allay';
 };
 
 export const getRandomMiniboss = () => {
     const minibossKeys = Object.keys(MINIBOSS_MOBS);
-    return minibossKeys.length > 0 ? minibossKeys[Math.floor(Math.random() * minibossKeys.length)] : 'Wither Skeleton';
+    return minibossKeys.length > 0 ? pickRandom(minibossKeys) : 'Wither Skeleton';
 };
 
 export const getRandomBoss = () => {
     const bossKeys = Object.keys(BOSS_MOBS);
-    return bossKeys.length > 0 ? bossKeys[Math.floor(Math.random() * bossKeys.length)] : 'Wither';
+    return bossKeys.length > 0 ? pickRandom(bossKeys) : 'Wither';
 };
 
 // Determines encounter type based on level cycle pattern
@@ -87,11 +88,7 @@ export const getMobForSkill = (skillConfig, userSkill) => {
     // Normal hostile mob
     const hostileMobKeys = Object.keys(HOSTILE_MOBS);
     const currentMobIsValid = userSkill.currentMob && hostileMobKeys.includes(userSkill.currentMob);
-    return currentMobIsValid
-        ? userSkill.currentMob
-        : hostileMobKeys.length > 0
-          ? hostileMobKeys[Math.floor(Math.random() * hostileMobKeys.length)]
-          : 'Zombie';
+    return currentMobIsValid ? userSkill.currentMob : hostileMobKeys.length > 0 ? pickRandom(hostileMobKeys) : 'Zombie';
 };
 
 // ===== RPG Progression Utility Functions =====
@@ -188,12 +185,12 @@ export const calculateXPToLevel = (difficulty, playerLevel) => {
 // Get a reading word based on difficulty level
 export const getReadingWord = (difficulty) => {
     if (difficulty === 7) {
-        return FUNNY_LONG_WORDS[Math.floor(Math.random() * FUNNY_LONG_WORDS.length)];
+        return pickRandom(FUNNY_LONG_WORDS);
     }
     const config = DIFFICULTY_CONTENT.reading[difficulty] || DIFFICULTY_CONTENT.reading[1];
     const charLength = config.charLength || 3;
     const words = READING_WORDS[charLength] || READING_WORDS[3];
-    return words[Math.floor(Math.random() * words.length)];
+    return pickRandom(words);
 };
 
 // ===== Math Problem Generation =====
@@ -231,7 +228,7 @@ export const generateMathProblem = (difficulty) => {
             { question: '((84 ÷ 7 + 18) × 2 - 16) ÷ 4', answer: '11' },
             { question: '250 - ((18 + 12) × 4 - 25)', answer: '155' },
         ];
-        const problem = nightmareProblems[Math.floor(Math.random() * nightmareProblems.length)];
+        const problem = pickRandom(nightmareProblems);
         return { type: 'math', question: `${problem.question} = ?`, answer: problem.answer, isNightmare: true };
     }
 
@@ -251,35 +248,35 @@ export const generateMathProblem = (difficulty) => {
             { question: '(8 - 3) × 2', answer: '10' },
             { question: '4 × 2 - 1', answer: '7' },
         ];
-        const problem = pemdasProblems[Math.floor(Math.random() * pemdasProblems.length)];
+        const problem = pickRandom(pemdasProblems);
         return { type: 'math', question: `${problem.question} = ?`, answer: problem.answer, isPemdas: true };
     }
 
     // Difficulties 1-5: Standard operations
     const operations = config.operations || ['+'];
     const [minVal, maxVal] = config.range || [1, 9];
-    const operation = operations[Math.floor(Math.random() * operations.length)];
+    const operation = pickRandom(operations);
 
     let a, b, question, answer;
 
     switch (operation) {
         case '+':
-            a = Math.floor(Math.random() * (maxVal - minVal + 1)) + minVal;
-            b = Math.floor(Math.random() * (maxVal - minVal + 1)) + minVal;
+            a = randomInt(minVal, maxVal);
+            b = randomInt(minVal, maxVal);
             question = `${a} + ${b} = ?`;
             answer = (a + b).toString();
             break;
         case '-':
             // Ensure positive result
-            a = Math.floor(Math.random() * (maxVal - minVal + 1)) + minVal;
-            b = Math.floor(Math.random() * a) + 1; // b is always less than or equal to a
+            a = randomInt(minVal, maxVal);
+            b = randomInt(1, a); // b is always less than or equal to a
             question = `${a} - ${b} = ?`;
             answer = (a - b).toString();
             break;
         case '*': {
             const [multMin, multMax] = config.multiplyRange || [1, 12];
-            a = Math.floor(Math.random() * (multMax - multMin + 1)) + multMin;
-            b = Math.floor(Math.random() * (multMax - multMin + 1)) + multMin;
+            a = randomInt(multMin, multMax);
+            b = randomInt(multMin, multMax);
             question = `${a} × ${b} = ?`;
             answer = (a * b).toString();
             break;
@@ -287,16 +284,16 @@ export const generateMathProblem = (difficulty) => {
         case '/': {
             // Ensure clean division
             const [divMin, divMax] = config.divisionRange || [1, 12];
-            b = Math.floor(Math.random() * (divMax - divMin + 1)) + divMin;
-            const quotient = Math.floor(Math.random() * 10) + 1;
+            b = randomInt(divMin, divMax);
+            const quotient = randomInt(1, 10);
             a = b * quotient;
             question = `${a} ÷ ${b} = ?`;
             answer = quotient.toString();
             break;
         }
         default:
-            a = Math.floor(Math.random() * 9) + 1;
-            b = Math.floor(Math.random() * 9) + 1;
+            a = randomInt(1, 9);
+            b = randomInt(1, 9);
             question = `${a} + ${b} = ?`;
             answer = (a + b).toString();
     }
@@ -316,7 +313,7 @@ export const getWordForDifficulty = (difficulty) => {
     if (!pool || pool.length === 0) {
         // Fallback to difficulty 1 pool if something goes wrong
         const fallbackPool = WRITING_DIFFICULTY_POOLS[1];
-        const item = fallbackPool[Math.floor(Math.random() * fallbackPool.length)];
+        const item = pickRandom(fallbackPool);
         return {
             word: item.word.toUpperCase(),
             displayName: item.displayName,
@@ -325,7 +322,7 @@ export const getWordForDifficulty = (difficulty) => {
     }
 
     // Select a random word from the pool
-    const item = pool[Math.floor(Math.random() * pool.length)];
+    const item = pickRandom(pool);
     return {
         word: item.word.toUpperCase(),
         displayName: item.displayName,
@@ -340,7 +337,7 @@ export const getItemsForLength = (targetLength) => {
     // First, try to find a single item matching the length from the comprehensive index
     const matchingWords = WRITING_WORD_INDEX.filter((item) => item.length === targetLength);
     if (matchingWords.length > 0) {
-        const item = matchingWords[Math.floor(Math.random() * matchingWords.length)];
+        const item = pickRandom(matchingWords);
         return {
             items: [{ word: item.word.toUpperCase(), length: item.length }],
             combinedAnswer: item.word.toUpperCase(),
