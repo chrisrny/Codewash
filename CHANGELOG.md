@@ -14,7 +14,8 @@ Chaque PR ajoute sa ligne ici, dans la même PR.
 
 ### Ajouté
 
-- `docs/TESTS.md` : la stratégie de tests, quel test fige quel flux critique (DEBT-05, #32)
+- `docs/TESTS.md` : la stratégie de tests, quel test fige quel flux critique (DEBT-05, #33)
+- 39 tests de caractérisation des 6 mini-jeux de `SkillCard.jsx` (DEBT-05, #32)
 - `CHANGELOG.md` avec toutes les PR depuis le début (#31)
 - `src/services/random.js` et `src/services/clock.js` : tout le hasard et l'heure du jeu passent par là. `setRandom()` et `setNow()` servent à les fixer dans les tests (DEBT-04, #29)
 - `src/services/storage.js` : tous les accès au localStorage sont dans ce fichier (DEBT-02, #28)
@@ -31,6 +32,7 @@ Chaque PR ajoute sa ligne ici, dans la même PR.
 
 ### Modifié
 
+- Seuils de coverage remontés à 63 % (lignes) et 58 % (branches) (#32)
 - `docs/DEBT.md` v2 : diagramme des dépendances, explication de l'ordre et tableau avant/après (#30)
 - `gameUtils.js`, `mobDisplayUtils.js`, `App.jsx` et `PhantomEvent.jsx` utilisent `services/` à la place de `Math.random` et `Date` (#29)
 - `App.jsx` passe par `services/storage.js` et perd 50 lignes (#28)
@@ -39,6 +41,7 @@ Chaque PR ajoute sa ligne ici, dans la même PR.
 
 ### Corrigé
 
+- Simon : une erreur au premier tour arrêtait le jeu sans Game Over ni bouton Retry (DEBT-20, #32)
 - Une sauvegarde cassée dans le localStorage ne fait plus planter le jeu, il remet les noms par défaut (DEBT-03, #28)
 - La release Windows (.exe) était créée à chaque push sur `main`, maintenant seulement sur un tag `v*` (DEBT-13, #27)
 

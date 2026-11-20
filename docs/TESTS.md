@@ -5,7 +5,7 @@ Comment on teste CodeWash, et quel test protège quelle partie du jeu.
 ## 1. En bref
 
 - Outils : [Vitest](https://vitest.dev/) avec jsdom (un faux navigateur avec `localStorage`, `document` et `window`), et la coverage avec v8.
-- Les tests sont dans `tests/`, un fichier par partie du jeu. Il y en a 114 au 20/11.
+- Les tests sont dans `tests/`, un fichier par partie du jeu. Il y en a 153 au 20/11.
 - La CI lance `npm run coverage` sur chaque PR. Si un test casse ou si la coverage passe sous les seuils, on ne merge pas.
 
 ```bash
@@ -17,7 +17,7 @@ On a deux sortes de tests :
 
 | Sorte                   | À quoi ça sert                                          | Exemples                                             |
 | ----------------------- | ------------------------------------------------------- | ---------------------------------------------------- |
-| Test de caractérisation | Figer ce que fait le vieux code **avant** de le refacto | `save.test.jsx`, `xp-levels.test.js`, `tests/utils/` |
+| Test de caractérisation | Figer ce que fait le vieux code **avant** de le refacto | `save.test.jsx`, `xp-levels.test.js`, `tests/utils/`, `tests/games/` |
 | Test unitaire           | Tester le nouveau code qu'on écrit                      | `storage.test.js`, `random-clock.test.jsx`           |
 
 La règle : **d'abord les tests, ensuite le refacto**. Un refacto ne doit changer le résultat d'aucun test. Si un test doit changer, c'est qu'on corrige un bug exprès, et la PR le dit avec le numéro DEBT.
@@ -73,7 +73,7 @@ Les 7 autres tests de `save.test.jsx` n'ont pas bougé pendant ce refacto. C'est
 | Succès                              | `tests/utils/achievementUtils.test.js` (17) | Déblocage, paliers, nouveaux succès                                             | Christ |
 | Sons et musique                     | `tests/utils/soundManager.test.js` (15)     | Sons de l'interface et des mobs, musique de fond                                | Christ |
 | Auras des mobs                      | `tests/utils/mobDisplayUtils.test.js` (2)   | Aura tirée et son adjectif                                                      | Christ |
-| Mini-jeux (l'écran)                 | aucun pour l'instant                        | `SkillCard.jsx` n'est pas encore testé                                          | Christ |
+| Les 6 mini-jeux (l'écran)           | `tests/games/SkillCard.test.jsx` (39)       | Maths, écriture, lecture, ménage, mémoire et Simon, joués comme un joueur : ce que la carte renvoie au jeu | Christ |
 
 `tests/smoke.test.js` vérifie juste que Vitest marche.
 
@@ -112,7 +112,7 @@ Tests de `src/services/random.js` et `src/services/clock.js`, créés en #29. Av
 
 ## 5. Partie utils et mini-jeux (Christ)
 
-À compléter par Christ : ce que chaque fichier de `tests/utils/` fige et pourquoi, puis les tests des mini-jeux quand `SkillCard.jsx` sera découpé.
+À compléter par Christ : ce que chaque fichier de `tests/utils/` et `tests/games/SkillCard.test.jsx` fige, et pourquoi.
 
 ## 6. Les comportements bizarres qu'on a figés exprès
 
@@ -122,9 +122,11 @@ Les tests de caractérisation figent aussi les bugs. On ne les corrige pas en do
 | ------------------------------------------------------------------------------- | -------------------------- | --------------------------- |
 | Noms de profils cassés : le jeu plantait                                        | `save.test.jsx`            | Corrigé en #28 (DEBT-03)    |
 | Save d'un profil cassée : le jeu repart au niveau 1 et écrase l'ancienne save   | `save.test.jsx`            | Pas encore dans le registre |
-| Une soustraction peut donner un résultat négatif                                | `gameUtils.test.js`        | DEBT-17                     |
+| Une soustraction peut donner un résultat négatif                                | `gameUtils.test.js`, `SkillCard.test.jsx` | DEBT-17                     |
 | Maîtrise sans aucune compétence = dernier palier (`Math.min()` vaut `Infinity`) | `achievementUtils.test.js` | Pas encore dans le registre |
 | Son bloqué par le navigateur : l'erreur est avalée sans rien dire               | `soundManager.test.js`     | DEBT-08                     |
+| Simon : une erreur au premier tour arrêtait le jeu, sans Game Over ni Retry      | `SkillCard.test.jsx`       | Corrigé en #32 (DEBT-20)    |
+| Écriture : une mauvaise réponse n'est pas envoyée au jeu, donc pas de pénalité (en maths, si) | `SkillCard.test.jsx` | DEBT-21 |
 
 ## 7. Coverage
 
@@ -132,13 +134,15 @@ Mesurée avec `npm run coverage` le 20/11 :
 
 | Fichier                                  | Lignes | Branches |
 | ---------------------------------------- | ------ | -------- |
-| Tout `src/`                              | 53,1 % | 47,3 %   |
+| Tout `src/`                              | 64,9 % | 59,9 %   |
 | `src/services/` (storage, random, clock) | 100 %  | 100 %    |
+| `src/components/skills/SkillCard.jsx`    | 91,2 % | 81,8 %   |
 | `src/utils/gameUtils.js`                 | 88,1 % | 74,7 %   |
-| `src/components/skills/SkillCard.jsx`    | 38,8 % | 32,0 %   |
 | `src/App.jsx`                            | 31,4 % | 33,7 %   |
 
-Les seuils de la CI sont dans `vitest.config.js` : 51 % pour les lignes et les statements, 46 % pour les branches et les fonctions. On les remonte quand la coverage monte, et on ne les baisse jamais.
+Avec les tests des mini-jeux (#32), `SkillCard.jsx` est passé de 38,8 % à 91,2 % des lignes, et tout `src/` de 53,1 % à 64,9 %.
+
+Les seuils de la CI sont dans `vitest.config.js` : 63 % pour les lignes, 62 % pour les statements, 58 % pour les branches et 57 % pour les fonctions. On les remonte quand la coverage monte, et on ne les baisse jamais.
 
 ### Code nouveau et code modifié
 
@@ -150,5 +154,4 @@ Le but : 100 % des lignes nouvelles et 80 % des lignes modifiées couvertes par 
 ### Ce qui n'est pas encore bien testé
 
 - `App.jsx` (31 %) : le combat et l'écran principal. Il va être découpé en composants, chacun avec ses tests.
-- `SkillCard.jsx` (39 %) : les mini-jeux. Christ le découpe en un fichier par mini-jeu.
 - `MenuDrawer_old.jsx` (0 %) : jamais utilisé, il va être supprimé.
