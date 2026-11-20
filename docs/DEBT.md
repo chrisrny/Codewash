@@ -2,7 +2,7 @@
 
 ## 1. Carte du code
 
-### Les fichiers principaux
+### Les fichiers principaux (au départ, le 16/11)
 
 | Fichier | Lignes | Rôle |
 |---|---|---|
@@ -20,20 +20,59 @@
 | `src/utils/soundManager.js` | 287 | Musique et sons |
 | `electron/main.cjs` | 54 | Fenêtre desktop, charge `dist/index.html` |
 
-### Qui appelle quoi
+Ajouté depuis : `src/services/` (`storage.js`, `random.js`, `clock.js`), voir le diagramme.
 
+### Qui appelle quoi (à jour le 20/11)
+
+Une flèche `A --> B` veut dire « A importe B ».
+
+```mermaid
+flowchart TD
+    main[main.jsx] --> App[App.jsx]
+
+    subgraph composants [components]
+        SkillCard[SkillCard.jsx<br/>les 6 mini-jeux]
+        Phantom[PhantomEvent.jsx]
+        Drawers[MenuDrawer, CosmeticsDrawer,<br/>SettingsDrawer, ProfileCard]
+        UI[GlobalStyles, SafeImage, PixelHeart,<br/>MobWithAura, modals]
+    end
+
+    subgraph utils [utils : calculs]
+        gameUtils[gameUtils.js]
+        achUtils[achievementUtils.js]
+        mobDisplay[mobDisplayUtils.js]
+        sound[soundManager.js]
+    end
+
+    subgraph constants [constants : données]
+        gameData[gameData.jsx]
+        achievements[achievements.js]
+    end
+
+    subgraph services [services : I/O]
+        storage[storage.js<br/>localStorage]
+        random[random.js<br/>hasard]
+        clock[clock.js<br/>heure]
+    end
+
+    App --> SkillCard & Phantom & Drawers & UI
+    App --> gameUtils & achUtils & mobDisplay & sound
+    App --> storage & random & clock
+    SkillCard --> gameUtils & mobDisplay & sound & gameData
+    Phantom --> storage & random & clock & sound
+    Drawers --> gameData & achievements & gameUtils
+    gameUtils --> gameData & random
+    mobDisplay --> random
+    achUtils --> achievements
 ```
-main.jsx
- └── App.jsx
-      ├── GlobalStyles, SafeImage, PixelHeart, AchievementToast
-      ├── MenuDrawer, CosmeticsDrawer, SettingsDrawer -> ProfileCard
-      ├── ResetModal, BugReportModal
-      ├── SkillCard -> soundManager, gameUtils, mobDisplayUtils, gameData
-      ├── PhantomEvent -> soundManager, gameData
-      ├── gameUtils -> gameData
-      ├── achievementUtils -> achievements
-      └── soundManager
-```
+
+Ce qu'il faut retenir :
+
+- `App.jsx` est au centre : il importe presque tout et passe tout l'état en props. C'est le point le plus fragile (DEBT-01).
+- Les imports vont dans un seul sens : components → utils → constants. Aucun fichier de `utils/` ou `constants/` n'importe un composant.
+- Depuis les refactos #28 et #29, la sauvegarde, le hasard et l'heure passent par `services/`. Le reste du code ne parle plus directement au navigateur pour ça, et on peut les remplacer dans les tests.
+- Il reste deux I/O hors de `services/` : le son (`soundManager.js`, rangé dans `utils/` alors que c'est de l'I/O) et le micro (dans `App.jsx`).
+- `SkillCard.jsx` dépend de 4 modules et a 17 `useState` : c'est le deuxième point chaud (DEBT-06).
 
 ### Où est l'état
 
@@ -71,6 +110,18 @@ Mesurées le 16/11/2026 sur `dev` (commit `a0f8772`), avant tout refacto.
 | Complexité cyclomatique | ESLint, règle `complexity` | `npx eslint src --rule '{"complexity": ["warn", 10]}'` |
 | Duplication | jscpd | `npx jscpd src` |
 | Lint | ESLint | `npm run lint` |
+
+Toutes les mesures d'un coup, depuis la racine du projet (après `npm install`) :
+
+```bash
+find src -name '*.js' -o -name '*.jsx' | xargs wc -l | sort -rn
+npm run coverage
+npx eslint src --rule '{"complexity": ["warn", 10]}'
+npx jscpd src
+npm run lint
+```
+
+La CI relance la coverage, la complexité (dans le lint) et la duplication à chaque PR, donc ces chiffres sont vérifiés en continu.
 
 ### Taille des fichiers
 
@@ -113,6 +164,27 @@ Les 5 pires :
 
 ESLint : 0 erreur, 0 warning avec la config de base du template Vite.
 
+### Avant / après chaque refacto
+
+On remesure avec les mêmes commandes après chaque refacto mergé. La colonne « Avant #28 » sert de point de comparaison, et pas les mesures du 16/11 : entre les deux, Prettier a reformaté tout le code (PR #23, ça change le nombre de lignes et la duplication) et Christ a ajouté 62 tests (PR #26).
+
+| Mesure | Avant #28 (17/11, `939c13b`) | Après #28 sauvegarde (18/11) | Après #29 hasard + heure (20/11) |
+|---|---|---|---|
+| Tests | 81 | 103 | 114 |
+| Coverage (lignes) | 51,2 % | 52,0 % | 53,1 % |
+| Lignes de `App.jsx` | 1681 | 1631 | 1633 |
+| Accès directs au localStorage | 29 | 0 | 0 |
+| `Math.random` hors `services/` | 35 | 35 | 6 |
+| `Date` hors `services/` | 4 | 4 | 1 |
+| Fonctions avec une complexité > 10 | 14 | 14 | 14 |
+| Duplication (jscpd) | 1,25 % | 1,24 % | 1,24 % |
+
+Ce que ça montre :
+
+- #28 : plus aucun accès direct au localStorage, `App.jsx` perd 50 lignes, et une save cassée ne fait plus planter le jeu (DEBT-02, DEBT-03).
+- #29 : il ne reste que 6 `Math.random` (5 dans `SkillCard.jsx`, 1 dans `soundManager.js`) et 1 `Date` (dans `recordLoginDate`, une fonction jamais appelée, DEBT-18). Les tests du hasard et de l'heure sont maintenant déterministes (DEBT-04).
+- La complexité ne baisse pas encore. Ce sera le travail du découpage d'`App.jsx` et de `SkillCard.jsx` (DEBT-01, DEBT-06).
+
 ## 3. Liste de la dette
 
 | ID | Fichier | Problème | Impact | Risque | Effort | Priorité | Statut |
@@ -121,7 +193,7 @@ ESLint : 0 erreur, 0 warning avec la config de base du template Vite.
 | DEBT-02 | App.jsx, PhantomEvent.jsx | localStorage utilisé partout directement | Haut | Haut | 1 jour | 1 | Fini (tout passe par `src/services/storage.js`) |
 | DEBT-03 | App.jsx (l.51-52) | JSON.parse sans try/catch, une save cassée fait crash le jeu | Haut | Moyen | 1h | 1 | Fini (`try/catch` dans `storage.js`, testé) |
 | DEBT-04 | gameUtils.js, SkillCard.jsx... | Math.random, Date.now et setTimeout en dur, dur à tester | Moyen | Haut | 1 jour | 1 | En cours : `src/services/random.js` et `clock.js` utilisés par gameUtils, mobDisplayUtils, App et PhantomEvent. Reste SkillCard.jsx et soundManager.js (Christ). Les `setTimeout` sont testés avec `vi.useFakeTimers()` |
-| DEBT-05 | tout le projet | Pas de tests, pas de CI | Haut | Haut | 2 jours | 1 | En cours |
+| DEBT-05 | tout le projet | Pas de tests, pas de CI | Haut | Haut | 2 jours | 1 | En cours : Vitest, 114 tests, CI avec quality gates. Reste l'analyse statique et la coverage des lignes modifiées dans la CI |
 | DEBT-06 | SkillCard.jsx | 778 lignes, les 6 mini-jeux dans le même fichier | Haut | Moyen | 3 jours | 2 | À faire |
 | DEBT-07 | SkillCard.jsx | Des sons joués sans passer par soundManager | Moyen | Moyen | 2h | 2 | À faire |
 | DEBT-08 | soundManager.js, SkillCard.jsx | Erreurs de son ignorées (.catch vide) | Bas | Moyen | 1h | 3 | À faire |
@@ -145,11 +217,24 @@ ESLint : 0 erreur, 0 warning avec la config de base du template Vite.
 | Moyen | 09 | 07, 13, 14, 16, 17 | 04, 10, 11, 15, 19 |
 | Bas | 12, 18 | 08 | |
 
+### Pourquoi cet ordre
+
+On commence par le coin en haut à droite (impact haut, probabilité haute) et on finit par le coin en bas à gauche. Mais l'ordre réel tient aussi compte de l'effort et des liens entre les items :
+
+- **05 (tests, CI) passe avant tout.** Sans filet de sécurité, chaque refacto peut casser le jeu sans qu'on le voie.
+- **03 passe tôt, même s'il est en probabilité moyenne.** 1h d'effort pour supprimer un crash qui fait perdre la sauvegarde d'un enfant : gros gain, petit coût. On l'a fait avec 02, puisque les deux touchent la sauvegarde.
+- **04 passe avant 01.** Pour découper `App.jsx` sans risque, il faut d'abord pouvoir tester les combats, donc contrôler le hasard et l'heure.
+- **01 et 06 viennent ensuite.** Effort important, mais toutes les features passent par ces deux fichiers.
+- **10, 11 et 15 se font avec les features** (thèmes et bug report), puisque la feature corrige le problème.
+- **En bas à gauche (08, 09, 12, 18) : à la fin.** Peu d'impact et peu de risque, on les fait s'il reste du temps.
+- **14 (dépendances) volontairement à la fin.** Mettre à jour les dépendances peut tout casser : on le fait quand les tests couvrent assez le jeu.
+- **16 et 19 restent en dette.** 16 dépend du navigateur (on isole seulement le micro), 19 dépend de l'école.
+
 ## 5. Plan d'attaque
 
-1. Tests et CI d'abord (DEBT-05, DEBT-13) : sans tests on ne voit pas si on casse quelque chose.
-2. La sauvegarde (DEBT-03, DEBT-02) : c'est ce qui peut casser le plus facilement.
-3. Le hasard et le temps (DEBT-04) : pour pouvoir tester les jeux.
+1. Tests et CI d'abord (DEBT-05, DEBT-13) : sans tests on ne voit pas si on casse quelque chose. Fait (PR #4, #23 à #27), il reste l'analyse statique.
+2. La sauvegarde (DEBT-03, DEBT-02) : c'est ce qui peut casser le plus facilement. Fait (PR #28).
+3. Le hasard et le temps (DEBT-04) : pour pouvoir tester les jeux. Fait pour l'app (PR #29), reste `SkillCard.jsx` et `soundManager.js`.
 4. Découper App.jsx et SkillCard.jsx (DEBT-01, DEBT-06) : toutes les features passent par ces fichiers.
 5. Le reste du nettoyage (DEBT-07, 08, 09, 12).
 6. Avec les features : thèmes (DEBT-10, 11) et bug report (DEBT-15).
