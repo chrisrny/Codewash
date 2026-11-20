@@ -14,6 +14,8 @@ Chaque PR ajoute sa ligne ici, dans la même PR.
 
 ### Ajouté
 
+- `docs/TESTS.md` : la stratégie de tests, quel test fige quel flux critique (DEBT-05, #32)
+- `CHANGELOG.md` avec toutes les PR depuis le début (#31)
 - `src/services/random.js` et `src/services/clock.js` : tout le hasard et l'heure du jeu passent par là. `setRandom()` et `setNow()` servent à les fixer dans les tests (DEBT-04, #29)
 - `src/services/storage.js` : tous les accès au localStorage sont dans ce fichier (DEBT-02, #28)
 - 11 tests sur le hasard, l'heure et le Phantom avec une fausse horloge (#29)
