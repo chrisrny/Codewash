@@ -468,13 +468,15 @@ describe('motifs (Simon)', () => {
         expect(text()).toContain('Watch!');
     });
 
-    it("bug : erreur au premier tour, le jeu s'arrête sans message ni bouton Retry", async () => {
+    it('erreur au premier tour : Game Over et Retry permettent de recommencer', async () => {
         await render('patterns');
         await wait(SHOW_FIRST_ROUND);
         await click(axolotl('Cyan'));
         expect(text()).not.toContain('Your turn!');
-        expect(text()).not.toContain('Game Over');
-        expect(button('Retry')).toBeUndefined();
+        expect(text()).toContain('Game Over! Rounds: 0');
+        await click(button('Retry'));
+        expect(text()).toContain('Round: 0');
+        expect(text()).toContain('Watch!');
         expect(props.onMathSubmit).not.toHaveBeenCalled();
     });
 });

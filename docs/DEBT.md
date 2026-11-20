@@ -208,7 +208,7 @@ Ce que ça montre :
 | DEBT-17 | gameUtils.js (generateMathProblem) | Une soustraction peut donner un résultat négatif (« 0 - 1 = ? ») alors que le code dit l'empêcher. Trouvé par les tests de caractérisation | Moyen | Moyen | 15 min | 2 | À faire |
 | DEBT-18 | gameUtils.js, achievementUtils.js, mobDisplayUtils.js, soundManager.js | Fonctions exportées jamais appelées : `getItemsForLength`, `recordLoginDate` (refaite en double dans App.jsx), `generateMobWithAura`, `playMobSay`, `UI_SOUND_NAMES` | Bas | Bas | 30 min | 3 | À faire |
 | DEBT-19 | build-exe.yml | Le .exe se build sur un runner Windows hébergé par GitHub (`windows-latest`), bloqué sur l'orga Epitech faute de crédits : pas de .exe ni de release possible en CI pour l'instant. Les runners self-hosted de l'école ne servent qu'à la CI | Moyen | Haut | Dépend de l'école | 2 | Bloqué |
-| DEBT-20 | SkillCard.jsx (Simon) | Une erreur au premier tour arrête le jeu sans message « Game Over » ni bouton Retry : il faut quitter le combat pour rejouer. Trouvé par les tests de caractérisation | Moyen | Haut | 15 min | 2 | À faire |
+| DEBT-20 | SkillCard.jsx (Simon) | Une erreur au premier tour arrêtait le jeu sans message « Game Over » ni bouton Retry. Corrigé et couvert par un test de non-régression. | Moyen | Haut | 15 min | 2 | Fini |
 | DEBT-21 | SkillCard.jsx (écriture) | Une mauvaise réponse en écriture n'est pas signalée au jeu (pas de `WRONG` comme en maths), donc pas de pénalité : à décider si c'est voulu | Bas | Haut | 15 min | 3 | À faire |
 
 ## 4. Matrice de risque
