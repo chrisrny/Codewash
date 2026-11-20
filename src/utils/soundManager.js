@@ -25,6 +25,27 @@ const UI_SOUNDS = {
     successful_hit: 'assets/sounds/ui/successful_hit.wav',
 };
 
+const defaultDependencies = {
+    createAudio: (src) => new Audio(src),
+    random: () => Math.random(),
+};
+
+let dependencies = { ...defaultDependencies };
+
+export const configureSoundManager = ({ createAudio, random } = {}) => {
+    dependencies = {
+        ...dependencies,
+        ...(createAudio ? { createAudio } : {}),
+        ...(random ? { random } : {}),
+    };
+    bgmManagerInstance = null;
+};
+
+export const resetSoundManagerDependencies = () => {
+    dependencies = { ...defaultDependencies };
+    bgmManagerInstance = null;
+};
+
 // Mob name to folder name mapping (handles differences between display names and folder names)
 const MOB_FOLDER_MAP = {
     // Hostile mobs
@@ -106,14 +127,14 @@ class BGMManager {
             return this.currentTrackIndex >= 0 ? this.currentTrackIndex : 0;
         }
 
-        const randomIndex = Math.floor(Math.random() * availableIndices.length);
+        const randomIndex = Math.floor(dependencies.random() * availableIndices.length);
         return availableIndices[randomIndex];
     }
 
     play() {
         if (!this.audio) {
             this.currentTrackIndex = this.getRandomTrack();
-            this.audio = new Audio(this.tracks[this.currentTrackIndex]);
+            this.audio = dependencies.createAudio(this.tracks[this.currentTrackIndex]);
             this.audio.volume = this.volume;
 
             // When a track ends, play a new random track
@@ -178,7 +199,7 @@ export const playUISound = (soundName) => {
     const path = UI_SOUNDS[soundName];
     if (!path) return;
 
-    const audio = new Audio(path);
+    const audio = dependencies.createAudio(path);
     audio.volume = sfxVolume;
     audio.play().catch(() => {});
 };
@@ -248,7 +269,7 @@ export const playMobHurt = (mobName) => {
     if (!folder) return;
 
     // Use standardized naming (all files renamed to hurt.wav)
-    const audio = new Audio(`assets/sounds/mob/${folder}/hurt.wav`);
+    const audio = dependencies.createAudio(`assets/sounds/mob/${folder}/hurt.wav`);
     audio.volume = sfxVolume;
     audio.play().catch(() => {});
 };
@@ -262,7 +283,7 @@ export const playMobDeath = (mobName) => {
     if (!folder) return;
 
     // Use standardized naming (all files renamed to death.wav)
-    const audio = new Audio(`assets/sounds/mob/${folder}/death.wav`);
+    const audio = dependencies.createAudio(`assets/sounds/mob/${folder}/death.wav`);
     audio.volume = sfxVolume;
     audio.play().catch(() => {});
 };
@@ -276,7 +297,7 @@ export const playMobSay = (mobName) => {
     if (!folder) return;
 
     // Use standardized naming (all files renamed to say.wav)
-    const audio = new Audio(`assets/sounds/mob/${folder}/say.wav`);
+    const audio = dependencies.createAudio(`assets/sounds/mob/${folder}/say.wav`);
     audio.volume = sfxVolume;
     audio.play().catch(() => {});
 };
