@@ -46,12 +46,26 @@ import { t } from '../../i18n';
 2. Utiliser `t('ma.cle')` dans le composant.
 3. Lancer `npm test` : il vérifie que toutes les langues ont la nouvelle clé.
 
-## 5. Ce qui n'est pas encore traduit
+## 5. Les textes des données du jeu
 
-Au 23/11, `t()` est utilisé dans `App.jsx`, les menus, les réglages et les popups. Il reste :
+Les fichiers de données (`achievements.js`, `gameData.jsx`, les effets de `CosmeticsDrawer.jsx`) ne contiennent plus de texte, seulement des ids. Le texte est dans le fichier de langue, avec une clé faite à partir de l'id :
 
-- les noms et descriptions des succès (`src/constants/achievements.js`) ;
-- les compétences, les thèmes et les badges (`src/constants/gameData.jsx`) ;
+| Donnée | Clés |
+| --- | --- |
+| Un succès | `achievement.<id>.name`, `achievement.<id>.desc`, et `.tier1` à `.tier8` s'il a des paliers |
+| Un rang de palier | `tier.1` (Bronze) à `tier.8` (Mythic) |
+| Un thème de `THEMES_LIST` | `theme.<id>` |
+| Un badge de `BADGE_TIERS` | `badge.<title>` (le `title` sert aussi à trouver l'image) |
+| Une compétence | `skill.<id>` |
+| Un effet de bordure | `effect.<id>.name`, `effect.<id>.desc` |
+
+Donc, pour ajouter un succès, un thème ou un effet, il faut aussi ajouter ses clés dans `en.json`. Le test « chaque succès, palier, thème, badge et compétence du jeu a son texte » casse si on oublie.
+
+## 6. Ce qui n'est pas encore traduit
+
+Au 23/11, `t()` est utilisé dans `App.jsx`, les menus, les réglages, les popups, les succès et les cosmétiques. Il reste :
+
+- les textes des compétences affichés dans les mini-jeux : `fantasyName`, `actionName`, `taskDescription` de `SKILL_DATA`, et les noms par thème de `THEME_CONFIG` ;
 - les mini-jeux (`SkillCard.jsx`) et les questions des défis dans `App.jsx` (`Simon Says!`, `Spell it!`...) ;
 - les messages du micro. `Mic Off` sert aussi dans la logique de `SkillCard.jsx`, donc il sera traduit avec le service micro (DEBT-16) ;
 - les mots des mini-jeux de lecture et d'écriture : il faudra une liste de mots par langue, et un micro qui écoute dans la langue choisie.
