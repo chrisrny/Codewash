@@ -1,11 +1,12 @@
 import React, { useState, useRef } from 'react';
 import { X, AlertTriangle } from 'lucide-react';
+import { t } from '../../i18n';
 
 const ResetModal = ({ isOpen, onClose, onConfirm }) => {
     const [confirmText, setConfirmText] = useState('');
     const [error, setError] = useState(false);
     const inputRef = useRef(null);
-    const correctWord = 'DELETE';
+    const correctWord = t('reset.confirmWord');
 
     const isConfirmValid = confirmText.toUpperCase() === correctWord;
 
@@ -54,13 +55,15 @@ const ResetModal = ({ isOpen, onClose, onConfirm }) => {
                     <div className="bg-red-600/20 p-4 rounded-full mb-4 border-2 border-red-600">
                         <AlertTriangle size={48} className="text-red-500" />
                     </div>
-                    <h2 className="text-3xl font-bold text-red-400 uppercase tracking-wider mb-4">Delete Progress?</h2>
+                    <h2 className="text-3xl font-bold text-red-400 uppercase tracking-wider mb-4">
+                        {t('reset.title')}
+                    </h2>
                     <p className="text-stone-300 mb-4">
-                        Are you sure you want to delete all progress for this profile?{' '}
-                        <span className="text-red-400 font-bold">This action is irreversible!</span>
+                        {t('reset.question')} <span className="text-red-400 font-bold">{t('reset.warning')}</span>
                     </p>
                     <p className="text-stone-400 mb-4">
-                        Type <span className="text-red-400 font-bold">DELETE</span> to confirm:
+                        {t('reset.typeBefore')} <span className="text-red-400 font-bold">{correctWord}</span>{' '}
+                        {t('reset.typeAfter')}
                     </p>
                     <form onSubmit={handleSubmit} className="w-full">
                         <div className="relative w-full flex justify-center mb-4" onClick={handleSlotClick}>
@@ -90,14 +93,16 @@ const ResetModal = ({ isOpen, onClose, onConfirm }) => {
                                 ))}
                             </div>
                         </div>
-                        {error && <p className="text-red-400 text-sm mb-4">Please type DELETE to confirm.</p>}
+                        {error && (
+                            <p className="text-red-400 text-sm mb-4">{t('reset.error', { word: correctWord })}</p>
+                        )}
                         <div className="flex gap-4 w-full">
                             <button
                                 type="button"
                                 onClick={handleClose}
                                 className="flex-1 bg-stone-700 hover:bg-stone-600 text-white py-3 px-6 rounded-lg font-bold uppercase tracking-wider transition-all border-2 border-stone-500"
                             >
-                                Cancel
+                                {t('reset.cancel')}
                             </button>
                             <button
                                 type="submit"
@@ -108,7 +113,7 @@ const ResetModal = ({ isOpen, onClose, onConfirm }) => {
                                         : 'bg-stone-800 text-stone-500 border-stone-600 cursor-not-allowed'
                                 }`}
                             >
-                                Delete
+                                {t('reset.delete')}
                             </button>
                         </div>
                     </form>

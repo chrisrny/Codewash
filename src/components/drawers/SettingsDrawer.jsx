@@ -1,6 +1,7 @@
 import React from 'react';
 import { Users, Music, Trash2, AlertTriangle } from 'lucide-react';
 import ProfileCard from '../profile/ProfileCard';
+import { t } from '../../i18n';
 
 const SettingsDrawer = ({
     isOpen,
@@ -29,7 +30,7 @@ const SettingsDrawer = ({
                     className="text-4xl text-yellow-400 font-bold uppercase tracking-widest drop-shadow-md"
                     style={{ fontFamily: '"VT323", monospace' }}
                 >
-                    Settings
+                    {t('settings.title')}
                 </h2>
             </div>
 
@@ -38,7 +39,7 @@ const SettingsDrawer = ({
                 <div className="flex flex-col gap-6">
                     <div>
                         <h3 className="text-xl text-blue-300 mb-5 font-bold flex items-center gap-3 uppercase tracking-wider">
-                            <Users size={20} /> Select File
+                            <Users size={20} /> {t('settings.selectFile')}
                         </h3>
                         <div className="flex flex-col gap-4">
                             {[1, 2, 3].map((id) => (
@@ -61,12 +62,12 @@ const SettingsDrawer = ({
 
                     <div>
                         <h3 className="text-xl text-blue-300 mb-5 font-bold flex items-center gap-3 uppercase tracking-wider">
-                            <Music size={20} /> Audio Configuration
+                            <Music size={20} /> {t('settings.audio')}
                         </h3>
                         <div className="space-y-4 bg-slate-900/50 p-5 rounded-xl border-2 border-slate-600">
                             <div className="px-3">
                                 <div className="flex justify-between mb-1 text-slate-400 font-bold text-sm uppercase">
-                                    <span className="pl-2">Music Volume</span>
+                                    <span className="pl-2">{t('settings.music')}</span>
                                     <span className="text-yellow-400">{Math.round(bgmVol * 100)}%</span>
                                 </div>
                                 <input
@@ -81,7 +82,7 @@ const SettingsDrawer = ({
                             </div>
                             <div className="px-3">
                                 <div className="flex justify-between mb-1 text-slate-400 font-bold text-sm uppercase">
-                                    <span className="pl-2">SFX Volume</span>
+                                    <span className="pl-2">{t('settings.sfx')}</span>
                                     <span className="text-yellow-400">{Math.round(sfxVol * 100)}%</span>
                                 </div>
                                 <input
@@ -102,13 +103,13 @@ const SettingsDrawer = ({
             {/* Danger Zone - Fixed at bottom */}
             <div className="shrink-0 pt-4 border-t-2 border-red-900/50">
                 <h3 className="text-xl text-red-400 mb-4 font-bold flex items-center gap-3 uppercase tracking-wider">
-                    <AlertTriangle size={20} className="text-red-500" /> Danger Zone
+                    <AlertTriangle size={20} className="text-red-500" /> {t('settings.danger')}
                 </h3>
                 <button
                     onClick={onReset}
                     className="w-full bg-red-950/50 hover:bg-red-900/80 text-red-400 p-3 rounded-lg border border-red-900/50 hover:border-red-500 font-bold text-lg flex items-center justify-center gap-3 transition-all"
                 >
-                    <Trash2 size={20} /> DELETE PROFILE PROGRESS
+                    <Trash2 size={20} /> {t('settings.deleteProgress')}
                 </button>
             </div>
         </div>

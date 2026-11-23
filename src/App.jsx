@@ -80,6 +80,7 @@ import {
 } from './services/storage';
 import { random } from './services/random';
 import { getToday } from './services/clock';
+import { t } from './i18n';
 
 // Parent verification privilege constants
 const PARENT_PRIVILEGE_LEVEL = 200;
@@ -627,7 +628,7 @@ const App = () => {
                                     setLootBox({
                                         level: lvl,
                                         skillName: skillConfig.fantasyName,
-                                        item: 'New Rank!',
+                                        item: t('loot.newRank'),
                                         img: BASE_ASSETS.badges.Wood,
                                     });
                                     playNotification();
@@ -787,7 +788,7 @@ const App = () => {
             setLootBox({
                 level: skills[skillId].level + 1,
                 skillName: skillConfig.fantasyName,
-                item: 'Phantom Bonus!',
+                item: t('loot.phantomBonus'),
                 img: HOSTILE_MOBS['Phantom'],
             });
             playNotification();
@@ -1195,8 +1196,8 @@ const App = () => {
                 onClick={toggleFullscreen}
                 className="absolute z-40 bg-stone-800/90 text-white p-3 rounded-lg border-2 border-stone-600 hover:bg-stone-700 transition-all shadow-lg"
                 style={{ top: '24px', right: 'calc(24px + 76px + 12px)' }}
-                aria-label={isFullscreen ? 'Exit fullscreen' : 'Enter fullscreen'}
-                title={isFullscreen ? 'Exit fullscreen' : 'Enter fullscreen'}
+                aria-label={isFullscreen ? t('app.exitFullscreen') : t('app.enterFullscreen')}
+                title={isFullscreen ? t('app.exitFullscreen') : t('app.enterFullscreen')}
             >
                 {isFullscreen ? <Minimize size={48} /> : <Maximize size={48} />}
             </button>
@@ -1261,7 +1262,7 @@ const App = () => {
                     <SafeImage
                         src={currentThemeData.assets.logo}
                         fallbackSrc="https://placehold.co/800x300/333/FFD700?text=LOGO+PLACEHOLDER&font=monsterrat"
-                        alt="Game Logo"
+                        alt={t('app.logoAlt')}
                         className="w-[480px] md:w-[720px] lg:w-[960px] object-contain drop-shadow-2xl"
                     />
                 </div>
@@ -1269,7 +1270,7 @@ const App = () => {
                     className="text-9xl text-yellow-400 tracking-widest uppercase mt-[-20px] mb-[95px] z-20 relative drop-shadow-[4px_4px_0_#000]"
                     style={{ textShadow: '6px 6px 0 #000' }}
                 >
-                    Level Up!
+                    {t('app.title')}
                 </h1>
 
                 {/* Left Chevron - Parenthesis style with gradient fade */}
@@ -1392,15 +1393,19 @@ const App = () => {
                             </div>
                             <div className="text-left">
                                 <h2 className="text-2xl text-yellow-400 font-bold leading-none mb-1">
-                                    LEVEL {lootBox.level} REACHED!
+                                    {t('loot.levelReached', { level: lootBox.level })}
                                 </h2>
                                 <p className="text-stone-300 text-sm">{lootBox.skillName}</p>
                             </div>
                         </div>
                         <div className="text-right pl-8 border-l-2 border-stone-600 flex items-center gap-4">
-                            <SafeImage src={lootBox.img} alt="Badge" className="w-12 h-12 object-contain" />
+                            <SafeImage
+                                src={lootBox.img}
+                                alt={t('loot.badgeAlt')}
+                                className="w-12 h-12 object-contain"
+                            />
                             <div>
-                                <p className="text-stone-400 text-xs uppercase tracking-wider">Unlocked</p>
+                                <p className="text-stone-400 text-xs uppercase tracking-wider">{t('loot.unlocked')}</p>
                                 <p className="text-2xl text-green-400 font-bold">{lootBox.item}</p>
                             </div>
                         </div>
@@ -1424,10 +1429,10 @@ const App = () => {
                             className="text-8xl font-bold text-red-500 drop-shadow-[0_0_20px_rgba(255,0,0,0.8)]"
                             style={{ textShadow: '4px 4px 0 #000, -2px -2px 0 #000' }}
                         >
-                            YOU DIED
+                            {t('death.title')}
                         </h1>
-                        <p className="text-2xl text-red-300 mt-4">Level -1</p>
-                        <p className="text-lg text-stone-400 mt-2">Take a moment to rest...</p>
+                        <p className="text-2xl text-red-300 mt-4">{t('death.levelLost')}</p>
+                        <p className="text-lg text-stone-400 mt-2">{t('death.rest')}</p>
                     </div>
                 </div>
             )}
@@ -1440,9 +1445,9 @@ const App = () => {
                             className="text-6xl font-bold text-green-400 drop-shadow-[0_0_20px_rgba(0,255,0,0.8)]"
                             style={{ textShadow: '4px 4px 0 #000' }}
                         >
-                            LEVEL RESTORED!
+                            {t('restored.title')}
                         </h1>
-                        <p className="text-2xl text-yellow-400 mt-4">Welcome back, hero!</p>
+                        <p className="text-2xl text-yellow-400 mt-4">{t('restored.welcome')}</p>
                     </div>
                 </div>
             )}

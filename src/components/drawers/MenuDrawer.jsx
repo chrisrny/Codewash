@@ -11,6 +11,7 @@ import {
     getAchievementDisplayName,
 } from '../../utils/achievementUtils';
 import { calculateXPToLevel } from '../../utils/gameUtils';
+import { t } from '../../i18n';
 
 // Achievement grid constants
 const ACHIEVEMENT_GRID_COLUMNS = 6;
@@ -44,17 +45,17 @@ const MenuDrawer = ({ isOpen, skills, stats }) => {
                 {/* Header */}
                 <div className="shrink-0 border-b-4 border-stone-600 pb-4 mb-4">
                     <h2 className="text-5xl text-yellow-400 font-bold uppercase tracking-widest mb-2 drop-shadow-md">
-                        Achievements
+                        {t('menu.title')}
                     </h2>
                     <div className="flex gap-6 text-stone-400 text-2xl">
                         <p>
-                            Total Level: <span className="text-white font-bold">{totalLevels}</span>
+                            {t('menu.totalLevel')} <span className="text-white font-bold">{totalLevels}</span>
                         </p>
                         <p>
-                            Badges: <span className="text-yellow-400 font-bold">{totalBadges}</span>
+                            {t('menu.badges')} <span className="text-yellow-400 font-bold">{totalBadges}</span>
                         </p>
                         <p>
-                            Achievements:{' '}
+                            {t('menu.achievements')}{' '}
                             <span className="text-green-400 font-bold">
                                 {unlockedAchievements}/{totalAchievements}
                             </span>
@@ -92,7 +93,7 @@ const MenuDrawer = ({ isOpen, skills, stats }) => {
                                                     {key.toUpperCase()}
                                                 </h3>
                                                 <span className="text-stone-400 text-xl font-bold ml-2 shrink-0">
-                                                    Lvl {userSkill.level}
+                                                    {t('menu.level', { level: userSkill.level })}
                                                 </span>
                                             </div>
                                             <div className="w-full h-3 bg-stone-900 rounded-full border border-stone-600 relative overflow-hidden">
@@ -132,7 +133,10 @@ const MenuDrawer = ({ isOpen, skills, stats }) => {
                                                     </div>
                                                     {/* Tooltip */}
                                                     <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-black/90 text-white text-xs rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">
-                                                        {tier.title} (Lvl {tier.level})
+                                                        {t('menu.tierTooltip', {
+                                                            title: tier.title,
+                                                            level: tier.level,
+                                                        })}
                                                     </div>
                                                 </div>
                                             );
@@ -140,7 +144,7 @@ const MenuDrawer = ({ isOpen, skills, stats }) => {
 
                                         {/* LEGENDARY Badge(s) */}
                                         {legendaryCount > 0 && (
-                                            <div className="group relative" title="LEGENDARY!">
+                                            <div className="group relative" title={t('menu.legendary')}>
                                                 <div className="w-11 h-11 border-2 rounded-lg flex items-center justify-center border-yellow-500 bg-gradient-to-br from-yellow-900 to-stone-800 shadow-lg relative hover:scale-110 transition-all duration-300">
                                                     <SafeImage
                                                         src={BASE_ASSETS.badges.Legendary}
@@ -155,7 +159,7 @@ const MenuDrawer = ({ isOpen, skills, stats }) => {
                                                     )}
                                                 </div>
                                                 <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-black/90 text-white text-xs rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">
-                                                    LEGENDARY! (Lvl 180+)
+                                                    {t('menu.legendaryTooltip')}
                                                 </div>
                                             </div>
                                         )}
@@ -168,7 +172,7 @@ const MenuDrawer = ({ isOpen, skills, stats }) => {
                     {/* Special Achievements Section */}
                     <div className="mt-8">
                         <h3 className="text-3xl text-yellow-400 font-bold uppercase tracking-widest mb-4 border-b-2 border-stone-600 pb-2">
-                            Special Achievements
+                            {t('menu.special')}
                         </h3>
                         <div className="grid grid-cols-6 gap-3">
                             {Object.values(ACHIEVEMENTS).map((achievement, index) => {
@@ -270,8 +274,10 @@ const MenuDrawer = ({ isOpen, skills, stats }) => {
                                             {achievement.isTiered && (
                                                 <div className="mb-2">
                                                     <div className="flex justify-between text-xs text-slate-400 mb-1">
-                                                        <span>Progress: {progress}</span>
-                                                        {nextTier && <span>Next: {nextTier.level}</span>}
+                                                        <span>{t('menu.progress', { progress })}</span>
+                                                        {nextTier && (
+                                                            <span>{t('menu.next', { next: nextTier.level })}</span>
+                                                        )}
                                                     </div>
                                                     {nextTier && (
                                                         <>
@@ -287,13 +293,15 @@ const MenuDrawer = ({ isOpen, skills, stats }) => {
                                                                 ></div>
                                                             </div>
                                                             <p className="text-xs text-slate-500 mt-1">
-                                                                Next: {TIER_NAMES[currentTierIndex + 1]}
+                                                                {t('menu.next', {
+                                                                    next: TIER_NAMES[currentTierIndex + 1],
+                                                                })}
                                                             </p>
                                                         </>
                                                     )}
                                                     {!nextTier && unlocked && (
                                                         <p className="text-xs text-green-400 font-bold">
-                                                            MAX TIER REACHED!
+                                                            {t('menu.maxTier')}
                                                         </p>
                                                     )}
                                                 </div>
