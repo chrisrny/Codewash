@@ -32,6 +32,7 @@ import {
 } from './utils/gameUtils';
 import { getRandomAura } from './utils/mobDisplayUtils';
 import { loadSkills, loadTheme, loadStats } from './utils/profileLoader';
+import { getCardStyle } from './utils/carouselStyle';
 import {
     BASE_ASSETS,
     THEME_CONFIG,
@@ -1346,44 +1347,12 @@ const App = () => {
                 >
                     {getVisibleItems().map((item) => {
                         const isItemBattling = item.offset === 0 && battlingSkillId === item.id;
-                        // Calculate curved positioning based on offset
-                        const getVerticalOffset = (offset) => {
-                            if (offset === 0) return -55; // Center card lowered by 5px (was -60)
-                            if (Math.abs(offset) === 1) return -30; // Adjacent cards at intermediate height
-                            if (Math.abs(offset) === 2) return 20; // Outer cards at lowest position
-                            return 75; // Hidden positions (±3) - off-screen, continuing the parabolic curve
-                        };
-                        const translateY = getVerticalOffset(item.offset);
-                        // Add subtle rotation for 3D effect - negative values warp outward
-                        const rotateX =
-                            Math.abs(item.offset) === 3
-                                ? -12
-                                : Math.abs(item.offset) === 2
-                                  ? -8
-                                  : Math.abs(item.offset) === 1
-                                    ? -4
-                                    : 0;
 
                         return (
                             <div
                                 key={item.key}
                                 className="absolute transition-all duration-500 ease-out"
-                                style={{
-                                    transform: `translateX(${item.offset * 320}px) translateY(${translateY}px) rotateX(${rotateX}deg) scale(${item.offset === 0 ? 1.1 : 0.85})`,
-                                    opacity:
-                                        item.offset === 0
-                                            ? 1
-                                            : Math.abs(item.offset) === 3
-                                              ? 0
-                                              : Math.abs(item.offset) === 2
-                                                ? 0.3
-                                                : 0.6,
-                                    zIndex: isItemBattling ? 50 : item.offset === 0 ? 20 : 10 - Math.abs(item.offset),
-                                    filter: item.offset === 0 ? 'none' : 'brightness(0.5) blur(1px)',
-                                    cursor: item.offset !== 0 && !battlingSkillId ? 'pointer' : 'default',
-                                    // Smooth entry/exit transitions along the parabola
-                                    transitionTimingFunction: 'cubic-bezier(0.4, 0.0, 0.2, 1)',
-                                }}
+                                style={getCardStyle(item.offset, isItemBattling, !!battlingSkillId)}
                                 onClick={() => handleCardClick(item.offset)}
                             >
                                 <SkillCard
@@ -1391,7 +1360,7 @@ const App = () => {
                                     data={skills[item.id]}
                                     themeData={currentThemeData}
                                     isCenter={item.offset === 0}
-                                    isBattling={item.offset === 0 && battlingSkillId === item.id}
+                                    isBattling={isItemBattling}
                                     mobName={getMobForSkill(item, skills[item.id])}
                                     mobAura={getAuraForSkill(item, skills[item.id])}
                                     challenge={challengeData}
