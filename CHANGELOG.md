@@ -14,6 +14,7 @@ Chaque PR ajoute sa ligne ici, dans la même PR.
 
 ### Ajouté
 
+- Traduction : `src/i18n/` avec `t()` et un fichier JSON par langue (`en.json`), 7 tests, et `docs/TRADUCTION.md` pour ajouter une langue (#38)
 - `src/utils/carouselStyle.js` : le style des cartes du carrousel sorti d'`App.jsx`, avec 6 tests (DEBT-01, #37)
 - `src/utils/profileLoader.js` : la lecture de la save sortie d'`App.jsx`, avec 12 tests (DEBT-01, #36)
 - `docs/SAVE_FORMAT.md` : le contrat du format de sauvegarde, avec `tests/save-format.test.jsx` qui casse si le format change (DEBT-02, #35)
@@ -35,6 +36,7 @@ Chaque PR ajoute sa ligne ici, dans la même PR.
 
 ### Modifié
 
+- `App.jsx`, les menus, les réglages et les popups n'ont plus de texte en dur : 56 textes passent par `t()` (#38)
 - `App.jsx` : 31 lignes de moins, les 20 ternaires du carrousel sont remplacés par 3 tableaux (DEBT-01, #37)
 - `App.jsx` : 128 lignes de moins, la plus grosse complexité passe de 31 à 24 (DEBT-01, #36)
 - `soundManager.js` : `Audio` et le hasard sont injectables pour les tests avec `configureSoundManager` (#34)
