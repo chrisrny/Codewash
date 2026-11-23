@@ -323,10 +323,10 @@ export const THEME_CONFIG = {
 };
 
 export const THEMES_LIST = [
-    { id: 'minecraft', name: 'Minecraft', img: 'assets/themes/minecraft.png' },
-    { id: 'kpop', name: 'K-Pop Demon Hunters', img: 'assets/themes/kpop.jpg' },
-    { id: 'pokemon', name: 'Pokemon', img: 'assets/themes/pokemon.jpg' },
-    { id: 'spy', name: 'Spy', img: 'assets/themes/spy.png' },
+    { id: 'minecraft', img: 'assets/themes/minecraft.png' },
+    { id: 'kpop', img: 'assets/themes/kpop.jpg' },
+    { id: 'pokemon', img: 'assets/themes/pokemon.jpg' },
+    { id: 'spy', img: 'assets/themes/spy.png' },
 ];
 export const BADGE_TIERS = [
     { level: 20, title: 'Wood' },

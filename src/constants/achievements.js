@@ -19,11 +19,13 @@ import {
     Users,
     Gem,
 } from 'lucide-react';
+import { t } from '../i18n';
 
 /**
  * Achievement Definitions
- * Each achievement needs: id, name, description, icon, category
- * Tiered achievements have: tiers (array of tier objects with level, tierName)
+ * Each achievement needs: id, icon, category
+ * Tiered achievements have: tiers (array of tier objects with level)
+ * Les noms et descriptions sont dans src/i18n : achievement.<id>.name, .desc, .tier1 à .tier8
  */
 
 // Tier colors for visual progression
@@ -38,43 +40,41 @@ export const TIER_COLORS = {
     8: { border: '#FF1493', bg: '#FF1493/20', text: 'text-pink-500' }, // Mythic
 };
 
-export const TIER_NAMES = ['Bronze', 'Silver', 'Gold', 'Platinum', 'Emerald', 'Diamond', 'Legendary', 'Mythic'];
-
 // ============================================
 // TIERED ACHIEVEMENTS
 // ============================================
 
 export const PHANTOM_HUNTER_TIERS = [
-    { level: 5, tierName: 'Bronze Ghost Buster' },
-    { level: 10, tierName: 'Silver Ghost Buster' },
-    { level: 15, tierName: 'Gold Ghost Buster' },
-    { level: 20, tierName: 'Platinum Ghost Buster' },
-    { level: 25, tierName: 'Emerald Ghost Buster' },
-    { level: 50, tierName: 'Diamond Ghost Buster' },
-    { level: 75, tierName: 'Legendary Ghost Buster' },
-    { level: 100, tierName: 'Mythic Ghost Buster' },
+    { level: 5 },
+    { level: 10 },
+    { level: 15 },
+    { level: 20 },
+    { level: 25 },
+    { level: 50 },
+    { level: 75 },
+    { level: 100 },
 ];
 
 export const COMBINED_LEVEL_TIERS = [
-    { level: 100, tierName: 'Bronze Power' },
-    { level: 200, tierName: 'Silver Power' },
-    { level: 300, tierName: 'Gold Power' },
-    { level: 400, tierName: 'Platinum Power' },
-    { level: 500, tierName: 'Emerald Power' },
-    { level: 600, tierName: 'Diamond Power' },
-    { level: 700, tierName: 'Legendary Power' },
-    { level: 800, tierName: 'Mythic Power' },
+    { level: 100 },
+    { level: 200 },
+    { level: 300 },
+    { level: 400 },
+    { level: 500 },
+    { level: 600 },
+    { level: 700 },
+    { level: 800 },
 ];
 
 export const SKILL_MASTERY_TIERS = [
-    { level: 20, tierName: 'Bronze Apprentice' },
-    { level: 40, tierName: 'Silver Journeyman' },
-    { level: 60, tierName: 'Gold Adept' },
-    { level: 80, tierName: 'Platinum Expert' },
-    { level: 100, tierName: 'Emerald Master' },
-    { level: 120, tierName: 'Diamond Grandmaster' },
-    { level: 140, tierName: 'Legendary Sage' },
-    { level: 160, tierName: 'Mythic Transcendent' },
+    { level: 20 },
+    { level: 40 },
+    { level: 60 },
+    { level: 80 },
+    { level: 100 },
+    { level: 120 },
+    { level: 140 },
+    { level: 160 },
 ];
 
 // ============================================
@@ -85,8 +85,6 @@ export const ACHIEVEMENTS = {
     // Tiered Achievements
     phantom_hunter: {
         id: 'phantom_hunter',
-        name: 'Ghost Buster',
-        description: 'Catch Phantoms',
         icon: Ghost,
         category: 'combat',
         isTiered: true,
@@ -96,8 +94,6 @@ export const ACHIEVEMENTS = {
 
     combined_levels: {
         id: 'combined_levels',
-        name: 'Power Overwhelming',
-        description: 'Reach high combined levels',
         icon: TrendingUp,
         category: 'progression',
         isTiered: true,
@@ -109,8 +105,6 @@ export const ACHIEVEMENTS = {
 
     skill_mastery: {
         id: 'skill_mastery',
-        name: 'Jack of All Trades',
-        description: 'Level all skills evenly',
         icon: Award,
         category: 'progression',
         isTiered: true,
@@ -123,15 +117,13 @@ export const ACHIEVEMENTS = {
             const levels = Object.values(skills).map((s) => s.level || 0);
             const minLevel = Math.min(...levels);
             const count = levels.filter((l) => l >= minLevel).length;
-            return `${count}/6 skills at level ${minLevel}+`;
+            return t('achievement.skill_mastery.progress', { count, level: minLevel });
         },
     },
 
     // One-Time Achievements
     first_steps: {
         id: 'first_steps',
-        name: 'First Steps',
-        description: 'Defeat your first enemy',
         icon: Target,
         category: 'combat',
         isTiered: false,
@@ -140,8 +132,6 @@ export const ACHIEVEMENTS = {
 
     level_up: {
         id: 'level_up',
-        name: 'Level Up!',
-        description: 'Reach Level 2 in any skill',
         icon: Zap,
         category: 'progression',
         isTiered: false,
@@ -152,8 +142,6 @@ export const ACHIEVEMENTS = {
 
     fashion_forward: {
         id: 'fashion_forward',
-        name: 'Fashion Forward',
-        description: 'Change your theme for the first time',
         icon: Paintbrush,
         category: 'customization',
         isTiered: false,
@@ -162,8 +150,6 @@ export const ACHIEVEMENTS = {
 
     framed: {
         id: 'framed',
-        name: 'Framed!',
-        description: 'Change your border effect for the first time',
         icon: Frame,
         category: 'customization',
         isTiered: false,
@@ -172,8 +158,6 @@ export const ACHIEVEMENTS = {
 
     ouch: {
         id: 'ouch',
-        name: 'Ouch!',
-        description: 'Die for the first time',
         icon: Skull,
         category: 'combat',
         isTiered: false,
@@ -182,8 +166,6 @@ export const ACHIEVEMENTS = {
 
     dragon_slayer: {
         id: 'dragon_slayer',
-        name: 'Dragon Slayer',
-        description: 'Defeat your first boss',
         icon: Crown,
         category: 'combat',
         isTiered: false,
@@ -192,8 +174,6 @@ export const ACHIEVEMENTS = {
 
     mini_menace: {
         id: 'mini_menace',
-        name: 'Mini Menace',
-        description: 'Defeat your first mini-boss',
         icon: Shield,
         category: 'combat',
         isTiered: false,
@@ -202,8 +182,6 @@ export const ACHIEVEMENTS = {
 
     mini_master: {
         id: 'mini_master',
-        name: 'Mini Master',
-        description: 'Defeat all mini-bosses at least once',
         icon: Swords,
         category: 'completion',
         isTiered: false,
@@ -217,8 +195,6 @@ export const ACHIEVEMENTS = {
 
     world_ender: {
         id: 'world_ender',
-        name: 'World Ender',
-        description: 'Defeat all bosses at least once',
         icon: Trophy,
         category: 'completion',
         isTiered: false,
@@ -232,8 +208,6 @@ export const ACHIEVEMENTS = {
 
     monster_manual: {
         id: 'monster_manual',
-        name: 'Monster Manual',
-        description: 'Defeat all regular mobs at least once',
         icon: Users,
         category: 'completion',
         isTiered: false,
@@ -268,8 +242,6 @@ export const ACHIEVEMENTS = {
 
     perfectionist: {
         id: 'perfectionist',
-        name: 'Perfectionist',
-        description: 'Complete a memory game without any mismatches',
         icon: CheckCircle,
         category: 'skill',
         isTiered: false,
@@ -278,8 +250,6 @@ export const ACHIEVEMENTS = {
 
     speed_demon: {
         id: 'speed_demon',
-        name: 'Speed Demon',
-        description: 'Complete 10 battles in a single session',
         icon: Timer,
         category: 'skill',
         isTiered: false,
@@ -288,8 +258,6 @@ export const ACHIEVEMENTS = {
 
     dedicated: {
         id: 'dedicated',
-        name: 'Dedicated',
-        description: 'Play on 3 different days',
         icon: Calendar,
         category: 'engagement',
         isTiered: false,
@@ -301,8 +269,6 @@ export const ACHIEVEMENTS = {
 
     high_roller: {
         id: 'high_roller',
-        name: 'High Roller',
-        description: 'Reach difficulty 7 on any skill',
         icon: Sparkles,
         category: 'progression',
         isTiered: false,
@@ -313,8 +279,6 @@ export const ACHIEVEMENTS = {
 
     badge_collector: {
         id: 'badge_collector',
-        name: 'Badge Collector',
-        description: 'Earn your first badge (any tier)',
         icon: Gem,
         category: 'progression',
         isTiered: false,
@@ -325,8 +289,6 @@ export const ACHIEVEMENTS = {
 
     full_set: {
         id: 'full_set',
-        name: 'Full Set',
-        description: 'Earn all 8 badge tiers on a single skill',
         icon: Heart,
         category: 'progression',
         isTiered: false,
