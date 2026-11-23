@@ -5,7 +5,7 @@ Comment on teste CodeWash, et quel test protège quelle partie du jeu.
 ## 1. En bref
 
 - Outils : [Vitest](https://vitest.dev/) avec jsdom (un faux navigateur avec `localStorage`, `document` et `window`), et la coverage avec v8.
-- Les tests sont dans `tests/`, un fichier par partie du jeu. Il y en a 156 au 20/11.
+- Les tests sont dans `tests/`, un fichier par partie du jeu. Il y en a 168 au 20/11.
 - La CI lance `npm run coverage` sur chaque PR. Si un test casse ou si la coverage passe sous les seuils, on ne merge pas.
 
 ```bash
@@ -67,6 +67,7 @@ Les 7 autres tests de `save.test.jsx` n'ont pas bougé pendant ce refacto. C'est
 | Sauvegarde et profils               | `tests/save.test.jsx` (9)                   | Partie neuve, relire une save, vieilles saves, saves cassées, dernier profil    | Arthur |
 | Lecture et écriture du localStorage | `tests/storage.test.js` (21)                | Chaque clé du localStorage, valeurs par défaut, reset d'un profil               | Arthur |
 | Format de la save (contrat)         | `tests/save-format.test.jsx` (3)            | Une save complète relue sans perte, les champs et les clés de `docs/SAVE_FORMAT.md` | Arthur |
+| Lecture de la save                  | `tests/profileLoader.test.js` (12)          | Compétences neuves, vieilles saves complétées, thème et stats par défaut        | Arthur |
 | XP et niveaux                       | `tests/xp-levels.test.js` (10)              | XP pour passer un niveau, XP gagnée, mob / miniboss / boss, difficulté attendue | Arthur |
 | Hasard et heure                     | `tests/random-clock.test.jsx` (11)          | Tirages fixés, le Phantom (apparition, cooldown, départ)                        | Arthur |
 | Combat                              | `tests/utils/gameUtils.test.js` (28)        | Tirage des mobs, dégâts, vie, un mob meurt en 5 coups                           | Christ |
@@ -135,11 +136,11 @@ Mesurée avec `npm run coverage` le 20/11 :
 
 | Fichier                                  | Lignes | Branches |
 | ---------------------------------------- | ------ | -------- |
-| Tout `src/`                              | 65,0 % | 60,9 %   |
+| Tout `src/`                              | 65,9 % | 61,7 %   |
 | `src/services/` (storage, random, clock) | 100 %  | 100 %    |
 | `src/components/skills/SkillCard.jsx`    | 91,2 % | 81,8 %   |
 | `src/utils/gameUtils.js`                 | 88,1 % | 74,7 %   |
-| `src/App.jsx`                            | 31,4 % | 33,7 %   |
+| `src/App.jsx`                            | 28,2 % | 25,6 %   |
 
 Avec les tests des mini-jeux (#32), `SkillCard.jsx` est passé de 38,8 % à 91,2 % des lignes, et tout `src/` de 53,1 % à 64,9 %.
 
@@ -154,5 +155,5 @@ Le but : 100 % des lignes nouvelles et 80 % des lignes modifiées couvertes par 
 
 ### Ce qui n'est pas encore bien testé
 
-- `App.jsx` (31 %) : le combat et l'écran principal. Il va être découpé en composants, chacun avec ses tests.
+- `App.jsx` (28 %) : le combat et l'écran principal. Il est découpé petit à petit, chaque morceau sorti arrive avec ses tests (la lecture de la save est déjà sortie dans `profileLoader.js`, à 100 %).
 - `MenuDrawer_old.jsx` (0 %) : jamais utilisé, il va être supprimé.
