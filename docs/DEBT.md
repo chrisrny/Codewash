@@ -185,15 +185,34 @@ Ce que ça montre :
 - #29 : il ne reste que 6 `Math.random` (5 dans `SkillCard.jsx`, 1 dans `soundManager.js`) et 1 `Date` (dans `recordLoginDate`, une fonction jamais appelée, DEBT-18). Les tests du hasard et de l'heure sont maintenant déterministes (DEBT-04).
 - La complexité ne baisse pas encore. Ce sera le travail du découpage d'`App.jsx` et de `SkillCard.jsx` (DEBT-01, DEBT-06).
 
+#### Découpage d'`App.jsx` (DEBT-01)
+
+On découpe `App.jsx` en petites PR. Chaque PR est mesurée juste avant et juste après, sur le même code.
+
+| Mesure                                           | Avant (20/11) | Après PR 1 : lecture de la save |
+| ------------------------------------------------ | ------------- | ------------------------------- |
+| Lignes de `App.jsx`                              | 1633          | 1505                            |
+| Fonctions avec une complexité > 10 (tout `src/`) | 14            | 13                              |
+| dont dans `App.jsx`                              | 5             | 4                               |
+| Plus grosse complexité dans `App.jsx`            | 31            | 24                              |
+| Tests                                            | 156           | 168                             |
+| Coverage (lignes)                                | 65,0 %        | 65,9 %                          |
+| Duplication (jscpd)                              | 1,24 %        | 1,24 %                          |
+
+- PR 1 : `loadSkills`, `loadTheme` et `loadStats` sortent dans `src/utils/profileLoader.js`, couvert à 100 % par `tests/profileLoader.test.js`. La boucle qui complète les vieilles saves avait une complexité de 31 : elle est coupée en 4 petites fonctions, toutes à 10 ou moins.
+- Le `try/catch` autour de cette boucle est enlevé : depuis #28, `storage.js` renvoie `null` pour une save cassée (DEBT-03), donc ce `catch` ne pouvait plus s'exécuter.
+- La coverage d'`App.jsx` seul baisse (31,9 % → 28,2 %) : le code qui est parti était bien testé, ce qui reste (le combat) l'est peu. La coverage totale monte.
+- À venir : PR 2, le calcul de position des cartes du carrousel (complexité 16), et PR 3, les petits affichages (fonds noirs, loot box, « YOU DIED »). Le combat (`handleSuccessHit`, complexité 17 et 24) reste pour la fin : il n'a pas encore assez de tests.
+
 ## 3. Liste de la dette
 
 | ID | Fichier | Problème | Impact | Risque | Effort | Priorité | Statut |
 |---|---|---|---|---|---|---|---|
-| DEBT-01 | App.jsx | Fichier trop gros (1492 lignes, 32 useState), il fait tout | Haut | Haut | 3 jours | 1 | À faire |
+| DEBT-01 | App.jsx | Fichier trop gros (1492 lignes, 32 useState), il fait tout | Haut | Haut | 3 jours | 1 | En cours : la lecture de la save est sortie dans `src/utils/profileLoader.js` (1633 → 1505 lignes). Reste le carrousel, les petits affichages et le combat |
 | DEBT-02 | App.jsx, PhantomEvent.jsx | localStorage utilisé partout directement | Haut | Haut | 1 jour | 1 | Fini (tout passe par `src/services/storage.js`) |
 | DEBT-03 | App.jsx (l.51-52) | JSON.parse sans try/catch, une save cassée fait crash le jeu | Haut | Moyen | 1h | 1 | Fini (`try/catch` dans `storage.js`, testé) |
 | DEBT-04 | gameUtils.js, SkillCard.jsx... | Math.random, Date.now et setTimeout en dur, dur à tester | Moyen | Haut | 1 jour | 1 | En cours : `src/services/random.js` et `clock.js` utilisés par gameUtils, mobDisplayUtils, App et PhantomEvent. Reste SkillCard.jsx et soundManager.js (Christ). Les `setTimeout` sont testés avec `vi.useFakeTimers()` |
-| DEBT-05 | tout le projet | Pas de tests, pas de CI | Haut | Haut | 2 jours | 1 | En cours : Vitest, 114 tests, CI avec quality gates. Reste l'analyse statique et la coverage des lignes modifiées dans la CI |
+| DEBT-05 | tout le projet | Pas de tests, pas de CI | Haut | Haut | 2 jours | 1 | En cours : Vitest, 168 tests, CI avec quality gates, stratégie dans `docs/TESTS.md`. Reste l'analyse statique et la coverage des lignes modifiées dans la CI |
 | DEBT-06 | SkillCard.jsx | 778 lignes, les 6 mini-jeux dans le même fichier | Haut | Moyen | 3 jours | 2 | À faire |
 | DEBT-07 | SkillCard.jsx | Des sons joués sans passer par soundManager | Moyen | Moyen | 2h | 2 | À faire |
 | DEBT-08 | soundManager.js, SkillCard.jsx | Erreurs de son ignorées (.catch vide) | Bas | Moyen | 1h | 3 | À faire |
@@ -210,13 +229,14 @@ Ce que ça montre :
 | DEBT-19 | build-exe.yml | Le .exe se build sur un runner Windows hébergé par GitHub (`windows-latest`), bloqué sur l'orga Epitech faute de crédits : pas de .exe ni de release possible en CI pour l'instant. Les runners self-hosted de l'école ne servent qu'à la CI | Moyen | Haut | Dépend de l'école | 2 | Bloqué |
 | DEBT-20 | SkillCard.jsx (Simon) | Une erreur au premier tour arrêtait le jeu sans message « Game Over » ni bouton Retry. Corrigé et couvert par un test de non-régression. | Moyen | Haut | 15 min | 2 | Fini |
 | DEBT-21 | SkillCard.jsx (écriture) | Une mauvaise réponse en écriture n'est pas signalée au jeu (pas de `WRONG` comme en maths), donc pas de pénalité : à décider si c'est voulu | Bas | Haut | 15 min | 3 | À faire |
+| DEBT-22 | App.jsx (`handleSwitchProfile`) | En changeant de profil, le jeu recharge les compétences et le thème mais pas les stats : les stats de l'ancien profil sont sauvegardées dans le nouveau. Trouvé en sortant `loadStats` | Moyen | Haut | 30 min | 2 | À faire |
 
 ## 4. Matrice de risque
 
 | Impact / Probabilité | Basse | Moyenne | Haute |
 |---|---|---|---|
 | Haut | | 03, 06 | 01, 02, 05 |
-| Moyen | 09 | 07, 13, 14, 16, 17 | 04, 10, 11, 15, 19, 20 |
+| Moyen | 09 | 07, 13, 14, 16, 17 | 04, 10, 11, 15, 19, 20, 22 |
 | Bas | 12, 18 | 08 | 21 |
 
 ### Pourquoi cet ordre
@@ -237,7 +257,7 @@ On commence par le coin en haut à droite (impact haut, probabilité haute) et o
 1. Tests et CI d'abord (DEBT-05, DEBT-13) : sans tests on ne voit pas si on casse quelque chose. Fait (PR #4, #23 à #27), il reste l'analyse statique.
 2. La sauvegarde (DEBT-03, DEBT-02) : c'est ce qui peut casser le plus facilement. Fait (PR #28).
 3. Le hasard et le temps (DEBT-04) : pour pouvoir tester les jeux. Fait pour l'app (PR #29), reste `SkillCard.jsx` et `soundManager.js`.
-4. Découper App.jsx et SkillCard.jsx (DEBT-01, DEBT-06) : toutes les features passent par ces fichiers.
+4. Découper App.jsx et SkillCard.jsx (DEBT-01, DEBT-06) : toutes les features passent par ces fichiers. En cours : la lecture de la save est sortie d'`App.jsx`.
 5. Le reste du nettoyage (DEBT-07, 08, 09, 12).
 6. Avec les features : thèmes (DEBT-10, 11) et bug report (DEBT-15).
 7. Les dépendances à la fin (DEBT-14), parce que ça peut tout casser.

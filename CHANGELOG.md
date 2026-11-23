@@ -14,7 +14,8 @@ Chaque PR ajoute sa ligne ici, dans la même PR.
 
 ### Ajouté
 
-- `docs/SAVE_FORMAT.md` : le contrat du format de sauvegarde, avec `tests/save-format.test.jsx` qui casse si le format change (DEBT-02, #34)
+- `src/utils/profileLoader.js` : la lecture de la save sortie d'`App.jsx`, avec 12 tests (DEBT-01, #36)
+- `docs/SAVE_FORMAT.md` : le contrat du format de sauvegarde, avec `tests/save-format.test.jsx` qui casse si le format change (DEBT-02, #35)
 - `docs/TESTS.md` : la stratégie de tests, quel test fige quel flux critique (DEBT-05, #33)
 - 39 tests de caractérisation des 6 mini-jeux de `SkillCard.jsx` (DEBT-05, #32)
 - `CHANGELOG.md` avec toutes les PR depuis le début (#31)
@@ -33,6 +34,8 @@ Chaque PR ajoute sa ligne ici, dans la même PR.
 
 ### Modifié
 
+- `App.jsx` : 128 lignes de moins, la plus grosse complexité passe de 31 à 24 (DEBT-01, #36)
+- `soundManager.js` : `Audio` et le hasard sont injectables pour les tests avec `configureSoundManager` (#34)
 - Seuils de coverage remontés à 63 % (lignes) et 58 % (branches) (#32)
 - `docs/DEBT.md` v2 : diagramme des dépendances, explication de l'ordre et tableau avant/après (#30)
 - `gameUtils.js`, `mobDisplayUtils.js`, `App.jsx` et `PhantomEvent.jsx` utilisent `services/` à la place de `Math.random` et `Date` (#29)
