@@ -14,6 +14,7 @@ Chaque PR ajoute sa ligne ici, dans la même PR.
 
 ### Ajouté
 
+- `src/utils/carouselStyle.js` : le style des cartes du carrousel sorti d'`App.jsx`, avec 6 tests (DEBT-01, #37)
 - `src/utils/profileLoader.js` : la lecture de la save sortie d'`App.jsx`, avec 12 tests (DEBT-01, #36)
 - `docs/SAVE_FORMAT.md` : le contrat du format de sauvegarde, avec `tests/save-format.test.jsx` qui casse si le format change (DEBT-02, #35)
 - `docs/TESTS.md` : la stratégie de tests, quel test fige quel flux critique (DEBT-05, #33)
@@ -34,6 +35,7 @@ Chaque PR ajoute sa ligne ici, dans la même PR.
 
 ### Modifié
 
+- `App.jsx` : 31 lignes de moins, les 20 ternaires du carrousel sont remplacés par 3 tableaux (DEBT-01, #37)
 - `App.jsx` : 128 lignes de moins, la plus grosse complexité passe de 31 à 24 (DEBT-01, #36)
 - `soundManager.js` : `Audio` et le hasard sont injectables pour les tests avec `configureSoundManager` (#34)
 - Seuils de coverage remontés à 63 % (lignes) et 58 % (branches) (#32)

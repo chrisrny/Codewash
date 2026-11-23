@@ -5,7 +5,7 @@ Comment on teste CodeWash, et quel test protège quelle partie du jeu.
 ## 1. En bref
 
 - Outils : [Vitest](https://vitest.dev/) avec jsdom (un faux navigateur avec `localStorage`, `document` et `window`), et la coverage avec v8.
-- Les tests sont dans `tests/`, un fichier par partie du jeu. Il y en a 168 au 20/11.
+- Les tests sont dans `tests/`, un fichier par partie du jeu. Il y en a 175 au 23/11.
 - La CI lance `npm run coverage` sur chaque PR. Si un test casse ou si la coverage passe sous les seuils, on ne merge pas.
 
 ```bash
@@ -68,12 +68,13 @@ Les 7 autres tests de `save.test.jsx` n'ont pas bougé pendant ce refacto. C'est
 | Lecture et écriture du localStorage | `tests/storage.test.js` (21)                | Chaque clé du localStorage, valeurs par défaut, reset d'un profil               | Arthur |
 | Format de la save (contrat)         | `tests/save-format.test.jsx` (3)            | Une save complète relue sans perte, les champs et les clés de `docs/SAVE_FORMAT.md` | Arthur |
 | Lecture de la save                  | `tests/profileLoader.test.js` (12)          | Compétences neuves, vieilles saves complétées, thème et stats par défaut        | Arthur |
+| Carrousel des compétences           | `tests/carouselStyle.test.js` (6)           | Place, taille, opacité et clic des 7 cartes, avec et sans combat                | Arthur |
 | XP et niveaux                       | `tests/xp-levels.test.js` (10)              | XP pour passer un niveau, XP gagnée, mob / miniboss / boss, difficulté attendue | Arthur |
 | Hasard et heure                     | `tests/random-clock.test.jsx` (11)          | Tirages fixés, le Phantom (apparition, cooldown, départ)                        | Arthur |
 | Combat                              | `tests/utils/gameUtils.test.js` (28)        | Tirage des mobs, dégâts, vie, un mob meurt en 5 coups                           | Christ |
 | Contenu des mini-jeux               | `tests/utils/gameUtils.test.js`             | Calculs, mots de lecture et d'écriture selon la difficulté                      | Christ |
 | Succès                              | `tests/utils/achievementUtils.test.js` (17) | Déblocage, paliers, nouveaux succès                                             | Christ |
-| Sons et musique                     | `tests/utils/soundManager.test.js` (15)     | Sons de l'interface et des mobs, musique de fond                                | Christ |
+| Sons et musique                     | `tests/utils/soundManager.test.js` (16)     | Sons de l'interface et des mobs, musique de fond                                | Christ |
 | Auras des mobs                      | `tests/utils/mobDisplayUtils.test.js` (2)   | Aura tirée et son adjectif                                                      | Christ |
 | Les 6 mini-jeux (l'écran)           | `tests/games/SkillCard.test.jsx` (39)       | Maths, écriture, lecture, ménage, mémoire et Simon, joués comme un joueur : ce que la carte renvoie au jeu | Christ |
 
@@ -132,15 +133,16 @@ Les tests de caractérisation figent aussi les bugs. On ne les corrige pas en do
 
 ## 7. Coverage
 
-Mesurée avec `npm run coverage` le 20/11 :
+Mesurée avec `npm run coverage` le 23/11 :
 
 | Fichier                                  | Lignes | Branches |
 | ---------------------------------------- | ------ | -------- |
-| Tout `src/`                              | 65,9 % | 61,7 %   |
+| Tout `src/`                              | 66,1 % | 61,2 %   |
 | `src/services/` (storage, random, clock) | 100 %  | 100 %    |
+| `src/utils/` profileLoader, carouselStyle | 100 %  | 100 %    |
 | `src/components/skills/SkillCard.jsx`    | 91,2 % | 81,8 %   |
 | `src/utils/gameUtils.js`                 | 88,1 % | 74,7 %   |
-| `src/App.jsx`                            | 28,2 % | 25,6 %   |
+| `src/App.jsx`                            | 27,3 % | 17,8 %   |
 
 Avec les tests des mini-jeux (#32), `SkillCard.jsx` est passé de 38,8 % à 91,2 % des lignes, et tout `src/` de 53,1 % à 64,9 %.
 
@@ -155,5 +157,5 @@ Le but : 100 % des lignes nouvelles et 80 % des lignes modifiées couvertes par 
 
 ### Ce qui n'est pas encore bien testé
 
-- `App.jsx` (28 %) : le combat et l'écran principal. Il est découpé petit à petit, chaque morceau sorti arrive avec ses tests (la lecture de la save est déjà sortie dans `profileLoader.js`, à 100 %).
+- `App.jsx` (27 %) : le combat et l'écran principal. Il est découpé petit à petit, chaque morceau sorti arrive avec ses tests (la lecture de la save est déjà sortie dans `profileLoader.js` et le style du carrousel dans `carouselStyle.js`, les deux à 100 %). Sa coverage baisse à chaque morceau sorti, parce que ce qui part était bien testé.
 - `MenuDrawer_old.jsx` (0 %) : jamais utilisé, il va être supprimé.
