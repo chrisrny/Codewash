@@ -2,13 +2,16 @@ import React from 'react';
 import { Lock } from 'lucide-react';
 import SafeImage from '../ui/SafeImage';
 import { BADGE_TIERS, BASE_ASSETS, SKILL_DATA } from '../../constants/gameData';
-import { ACHIEVEMENTS, TIER_COLORS, TIER_NAMES } from '../../constants/achievements';
+import { ACHIEVEMENTS, TIER_COLORS } from '../../constants/achievements';
 import {
     isAchievementUnlocked,
     getCurrentTier,
     getNextTier,
     getTierProgress,
     getAchievementDisplayName,
+    getAchievementName,
+    getAchievementDescription,
+    getTierRank,
 } from '../../utils/achievementUtils';
 import { calculateXPToLevel } from '../../utils/gameUtils';
 import { t } from '../../i18n';
@@ -90,7 +93,7 @@ const MenuDrawer = ({ isOpen, skills, stats }) => {
                                         <div className="flex-1 min-w-0">
                                             <div className="flex justify-between items-center mb-1">
                                                 <h3 className="text-2xl font-bold text-white tracking-wide truncate">
-                                                    {key.toUpperCase()}
+                                                    {t(`skill.${key}`).toUpperCase()}
                                                 </h3>
                                                 <span className="text-stone-400 text-xl font-bold ml-2 shrink-0">
                                                     {t('menu.level', { level: userSkill.level })}
@@ -113,7 +116,10 @@ const MenuDrawer = ({ isOpen, skills, stats }) => {
                                                 <div
                                                     key={tier.level}
                                                     className="group relative"
-                                                    title={`${tier.title} - Level ${tier.level}`}
+                                                    title={t('menu.badgeTitle', {
+                                                        title: t(`badge.${tier.title}`),
+                                                        level: tier.level,
+                                                    })}
                                                 >
                                                     <div
                                                         className={`w-11 h-11 border-2 rounded-lg flex items-center justify-center transition-all duration-300 ${
@@ -134,7 +140,7 @@ const MenuDrawer = ({ isOpen, skills, stats }) => {
                                                     {/* Tooltip */}
                                                     <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-black/90 text-white text-xs rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">
                                                         {t('menu.tierTooltip', {
-                                                            title: tier.title,
+                                                            title: t(`badge.${tier.title}`),
                                                             level: tier.level,
                                                         })}
                                                     </div>
@@ -184,7 +190,7 @@ const MenuDrawer = ({ isOpen, skills, stats }) => {
                                 let nextTier = null;
                                 let progress = 0;
                                 let tierProgress = 0;
-                                let displayName = achievement.name;
+                                let displayName = getAchievementName(achievement.id);
                                 let tierColor = null;
 
                                 if (achievement.isTiered) {
@@ -265,7 +271,7 @@ const MenuDrawer = ({ isOpen, skills, stats }) => {
                                                         {displayName}
                                                     </h4>
                                                     <p className="text-xs text-slate-400 mt-0.5">
-                                                        {achievement.description}
+                                                        {getAchievementDescription(achievement.id)}
                                                     </p>
                                                 </div>
                                             </div>
@@ -294,7 +300,7 @@ const MenuDrawer = ({ isOpen, skills, stats }) => {
                                                             </div>
                                                             <p className="text-xs text-slate-500 mt-1">
                                                                 {t('menu.next', {
-                                                                    next: TIER_NAMES[currentTierIndex + 1],
+                                                                    next: getTierRank(currentTierIndex + 1),
                                                                 })}
                                                             </p>
                                                         </>
