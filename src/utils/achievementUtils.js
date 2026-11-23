@@ -1,4 +1,12 @@
 import { ACHIEVEMENTS } from '../constants/achievements';
+import { t } from '../i18n';
+
+// Textes des succès, dans src/i18n (voir docs/TRADUCTION.md)
+export const getAchievementName = (achievementId) => t(`achievement.${achievementId}.name`);
+export const getAchievementDescription = (achievementId) => t(`achievement.${achievementId}.desc`);
+export const getTierName = (achievementId, tierIndex) => t(`achievement.${achievementId}.tier${tierIndex + 1}`);
+// Bronze, Silver, Gold... pour tierIndex 0, 1, 2...
+export const getTierRank = (tierIndex) => t(`tier.${tierIndex + 1}`);
 
 /**
  * Achievement Utilities
@@ -87,7 +95,7 @@ export const getNextTier = (achievementId, stats, skills) => {
         return null; // At max tier
     }
 
-    return achievement.tiers[nextTierIndex];
+    return { ...achievement.tiers[nextTierIndex], tierName: getTierName(achievementId, nextTierIndex) };
 };
 
 /**
@@ -208,10 +216,10 @@ export const getAchievementDisplayName = (achievementId, stats, skills) => {
     if (achievement.isTiered) {
         const tierIndex = getCurrentTier(achievementId, stats, skills);
         if (tierIndex >= 0) {
-            return achievement.tiers[tierIndex].tierName;
+            return getTierName(achievementId, tierIndex);
         }
-        return achievement.name; // Not yet at tier 1
+        return getAchievementName(achievementId); // Not yet at tier 1
     }
 
-    return achievement.name;
+    return getAchievementName(achievementId);
 };

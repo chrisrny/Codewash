@@ -1,6 +1,7 @@
 import React from 'react';
 import { Trophy } from 'lucide-react';
-import { ACHIEVEMENTS, TIER_COLORS, TIER_NAMES } from '../../constants/achievements';
+import { ACHIEVEMENTS, TIER_COLORS } from '../../constants/achievements';
+import { getAchievementName, getTierName, getTierRank } from '../../utils/achievementUtils';
 import { t } from '../../i18n';
 
 /**
@@ -13,15 +14,14 @@ const AchievementToast = ({ achievementId, tierIndex = null }) => {
     if (!achievement) return null;
 
     // Determine display values
-    let displayName = achievement.name;
+    let displayName = getAchievementName(achievementId);
     let tierColor = null;
     let tierName = null;
 
     if (achievement.isTiered && tierIndex !== null && tierIndex >= 0) {
-        const tier = achievement.tiers[tierIndex];
-        displayName = tier.tierName;
+        displayName = getTierName(achievementId, tierIndex);
         tierColor = TIER_COLORS[tierIndex + 1];
-        tierName = TIER_NAMES[tierIndex];
+        tierName = getTierRank(tierIndex);
     }
 
     const Icon = achievement.icon;

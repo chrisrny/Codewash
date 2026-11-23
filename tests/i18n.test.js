@@ -1,5 +1,13 @@
 import { describe, it, expect, afterEach } from 'vitest';
 import { t, setLanguage, getLanguage, getLanguages, LANGUAGES } from '../src/i18n/index.js';
+import { ACHIEVEMENTS } from '../src/constants/achievements.js';
+import { THEMES_LIST, BADGE_TIERS, SKILL_DATA } from '../src/constants/gameData.jsx';
+import {
+    getAchievementName,
+    getAchievementDescription,
+    getTierName,
+    getTierRank,
+} from '../src/utils/achievementUtils.js';
 
 // Tests de src/i18n/index.js : la fonction t() et le choix de la langue.
 // Pour tester une 2e langue sans fichier, on en ajoute une fausse ('test') le temps d'un test.
@@ -49,7 +57,39 @@ describe('setLanguage et getLanguages', () => {
     });
 });
 
+describe('textes des succès', () => {
+    it('nom, description, palier et rang viennent du fichier de langue', () => {
+        expect(getAchievementName('ouch')).toBe('Ouch!');
+        expect(getAchievementDescription('ouch')).toBe('Die for the first time');
+        expect(getTierName('phantom_hunter', 1)).toBe('Silver Ghost Buster');
+        expect(getTierRank(0)).toBe('Bronze');
+    });
+
+    it('suivent la langue choisie', () => {
+        LANGUAGES.test = { _name: 'Test', 'achievement.ouch.name': 'Aïe !' };
+        setLanguage('test');
+
+        expect(getAchievementName('ouch')).toBe('Aïe !');
+    });
+});
+
 describe('fichiers de langue', () => {
+    it('chaque succès, palier, thème, badge et compétence du jeu a son texte dans en.json', () => {
+        const keys = [];
+        for (const id in ACHIEVEMENTS) {
+            keys.push(`achievement.${id}.name`, `achievement.${id}.desc`);
+            (ACHIEVEMENTS[id].tiers || []).forEach((tier, i) => keys.push(`achievement.${id}.tier${i + 1}`));
+        }
+        for (let i = 1; i <= 8; i++) keys.push(`tier.${i}`);
+        THEMES_LIST.forEach((theme) => keys.push(`theme.${theme.id}`));
+        BADGE_TIERS.forEach((badge) => keys.push(`badge.${badge.title}`));
+        SKILL_DATA.forEach((skill) => keys.push(`skill.${skill.id}`));
+
+        for (const key of keys) {
+            expect(LANGUAGES.en[key], key).toBeTypeOf('string');
+        }
+    });
+
     it('chaque langue a tous les textes de en.json, avec les mêmes {params}', () => {
         for (const code in LANGUAGES) {
             for (const key in LANGUAGES.en) {

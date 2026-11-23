@@ -36,6 +36,7 @@ Chaque PR ajoute sa ligne ici, dans la même PR.
 
 ### Modifié
 
+- Traduction : les succès, les paliers, les thèmes, les badges et les effets de bordure n'ont plus de texte dans le code, tout est dans `en.json` (#39)
 - `App.jsx`, les menus, les réglages et les popups n'ont plus de texte en dur : 56 textes passent par `t()` (#38)
 - `App.jsx` : 31 lignes de moins, les 20 ternaires du carrousel sont remplacés par 3 tableaux (DEBT-01, #37)
 - `App.jsx` : 128 lignes de moins, la plus grosse complexité passe de 31 à 24 (DEBT-01, #36)
