@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
 import { Save, X } from 'lucide-react';
+import { t } from '../../i18n';
 
 const ParentalVerificationModal = ({ isOpen, onClose, onVerified }) => {
     const [answer, setAnswer] = useState('');
     const [error, setError] = useState(false);
-    const correctAnswer = 'FLOPPY DISK';
+    const correctAnswer = t('parent.answer');
     const correctAnswerNoSpaces = correctAnswer.replace(/\s/g, '');
     const inputRef = React.useRef(null);
 
@@ -79,7 +80,9 @@ const ParentalVerificationModal = ({ isOpen, onClose, onVerified }) => {
                     <div className="bg-blue-600/20 p-6 rounded-full mb-4 border-2 border-blue-600">
                         <Save size={64} className="text-blue-400" />
                     </div>
-                    <h2 className="text-2xl font-bold text-blue-400 uppercase tracking-wider mb-4">What is this?</h2>
+                    <h2 className="text-2xl font-bold text-blue-400 uppercase tracking-wider mb-4">
+                        {t('parent.title')}
+                    </h2>
                     <form onSubmit={handleSubmit} className="w-full">
                         <div className="relative w-full flex justify-center mb-4" onClick={handleSlotClick}>
                             <input
@@ -114,12 +117,12 @@ const ParentalVerificationModal = ({ isOpen, onClose, onVerified }) => {
                                 )}
                             </div>
                         </div>
-                        {error && <p className="text-red-400 text-sm mb-4">Incorrect answer. Try again!</p>}
+                        {error && <p className="text-red-400 text-sm mb-4">{t('parent.error')}</p>}
                         <button
                             type="submit"
                             className="w-full bg-blue-600 hover:bg-blue-500 text-white py-3 px-6 rounded-lg font-bold uppercase tracking-wider transition-all border-2 border-blue-400"
                         >
-                            Submit
+                            {t('parent.submit')}
                         </button>
                     </form>
                 </div>

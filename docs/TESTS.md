@@ -5,7 +5,7 @@ Comment on teste CodeWash, et quel test protège quelle partie du jeu.
 ## 1. En bref
 
 - Outils : [Vitest](https://vitest.dev/) avec jsdom (un faux navigateur avec `localStorage`, `document` et `window`), et la coverage avec v8.
-- Les tests sont dans `tests/`, un fichier par partie du jeu. Il y en a 175 au 23/11.
+- Les tests sont dans `tests/`, un fichier par partie du jeu. Il y en a 182 au 23/11.
 - La CI lance `npm run coverage` sur chaque PR. Si un test casse ou si la coverage passe sous les seuils, on ne merge pas.
 
 ```bash
@@ -69,6 +69,7 @@ Les 7 autres tests de `save.test.jsx` n'ont pas bougé pendant ce refacto. C'est
 | Format de la save (contrat)         | `tests/save-format.test.jsx` (3)            | Une save complète relue sans perte, les champs et les clés de `docs/SAVE_FORMAT.md` | Arthur |
 | Lecture de la save                  | `tests/profileLoader.test.js` (12)          | Compétences neuves, vieilles saves complétées, thème et stats par défaut        | Arthur |
 | Carrousel des compétences           | `tests/carouselStyle.test.js` (6)           | Place, taille, opacité et clic des 7 cartes, avec et sans combat                | Arthur |
+| Traduction                          | `tests/i18n.test.js` (7)                    | `t()`, les `{params}`, le retour à l'anglais, chaque langue a toutes les clés   | Arthur |
 | XP et niveaux                       | `tests/xp-levels.test.js` (10)              | XP pour passer un niveau, XP gagnée, mob / miniboss / boss, difficulté attendue | Arthur |
 | Hasard et heure                     | `tests/random-clock.test.jsx` (11)          | Tirages fixés, le Phantom (apparition, cooldown, départ)                        | Arthur |
 | Combat                              | `tests/utils/gameUtils.test.js` (28)        | Tirage des mobs, dégâts, vie, un mob meurt en 5 coups                           | Christ |
@@ -137,9 +138,10 @@ Mesurée avec `npm run coverage` le 23/11 :
 
 | Fichier                                  | Lignes | Branches |
 | ---------------------------------------- | ------ | -------- |
-| Tout `src/`                              | 66,1 % | 61,2 %   |
+| Tout `src/`                              | 66,4 % | 61,4 %   |
 | `src/services/` (storage, random, clock) | 100 %  | 100 %    |
 | `src/utils/` profileLoader, carouselStyle | 100 %  | 100 %    |
+| `src/i18n/index.js`                      | 100 %  | 100 %    |
 | `src/components/skills/SkillCard.jsx`    | 91,2 % | 81,8 %   |
 | `src/utils/gameUtils.js`                 | 88,1 % | 74,7 %   |
 | `src/App.jsx`                            | 27,3 % | 17,8 %   |

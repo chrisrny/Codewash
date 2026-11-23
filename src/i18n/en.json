@@ -1,0 +1,70 @@
+{
+  "_name": "English",
+
+  "app.title": "Level Up!",
+  "app.logoAlt": "Game Logo",
+  "app.enterFullscreen": "Enter fullscreen",
+  "app.exitFullscreen": "Exit fullscreen",
+
+  "loot.levelReached": "LEVEL {level} REACHED!",
+  "loot.badgeAlt": "Badge",
+  "loot.unlocked": "Unlocked",
+  "loot.newRank": "New Rank!",
+  "loot.phantomBonus": "Phantom Bonus!",
+
+  "death.title": "YOU DIED",
+  "death.levelLost": "Level -1",
+  "death.rest": "Take a moment to rest...",
+  "restored.title": "LEVEL RESTORED!",
+  "restored.welcome": "Welcome back, hero!",
+
+  "phantom.alt": "Phantom",
+  "phantom.bonus": "+1 Level!",
+
+  "achievementToast.title": "ACHIEVEMENT UNLOCKED!",
+  "achievementToast.tier": "{tier} Tier",
+
+  "menu.title": "Achievements",
+  "menu.totalLevel": "Total Level:",
+  "menu.badges": "Badges:",
+  "menu.achievements": "Achievements:",
+  "menu.level": "Lvl {level}",
+  "menu.tierTooltip": "{title} (Lvl {level})",
+  "menu.legendary": "LEGENDARY!",
+  "menu.legendaryTooltip": "LEGENDARY! (Lvl 180+)",
+  "menu.special": "Special Achievements",
+  "menu.progress": "Progress: {progress}",
+  "menu.next": "Next: {next}",
+  "menu.maxTier": "MAX TIER REACHED!",
+
+  "settings.title": "Settings",
+  "settings.selectFile": "Select File",
+  "settings.audio": "Audio Configuration",
+  "settings.music": "Music Volume",
+  "settings.sfx": "SFX Volume",
+  "settings.danger": "Danger Zone",
+  "settings.deleteProgress": "DELETE PROFILE PROGRESS",
+
+  "profile.parent": "Parent",
+  "profile.parentQuestion": "Parent?",
+  "profile.level": "LV.",
+  "profile.skills": "Skill Proficiency",
+
+  "reset.title": "Delete Progress?",
+  "reset.question": "Are you sure you want to delete all progress for this profile?",
+  "reset.warning": "This action is irreversible!",
+  "reset.typeBefore": "Type",
+  "reset.typeAfter": "to confirm:",
+  "reset.confirmWord": "DELETE",
+  "reset.error": "Please type {word} to confirm.",
+  "reset.cancel": "Cancel",
+  "reset.delete": "Delete",
+
+  "parent.title": "What is this?",
+  "parent.answer": "FLOPPY DISK",
+  "parent.error": "Incorrect answer. Try again!",
+  "parent.submit": "Submit",
+
+  "bugReport.title": "Discovered a bug?",
+  "bugReport.text": "Whoa... That sucks..."
+}

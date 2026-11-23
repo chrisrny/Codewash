@@ -4,6 +4,7 @@ import { playSuccessfulHit } from '../utils/soundManager';
 import { loadPhantomLastSpawn, savePhantomLastSpawn } from '../services/storage';
 import { random } from '../services/random';
 import { now } from '../services/clock';
+import { t } from '../i18n';
 
 const MIN_COOLDOWN_MS = 5 * 60 * 1000; // 5 minutes
 const MAX_COOLDOWN_MS = 10 * 60 * 1000; // 10 minutes
@@ -132,7 +133,7 @@ const PhantomEvent = ({ battlingSkillId, onAwardLevel, onPhantomCaught }) => {
                 <img
                     key={`phantom-${fromLeft}`}
                     src={phantomSrc}
-                    alt="Phantom"
+                    alt={t('phantom.alt')}
                     className="w-24 h-24 object-contain drop-shadow-[0_0_10px_rgba(100,200,255,0.8)]"
                     draggable={false}
                 />
@@ -140,7 +141,7 @@ const PhantomEvent = ({ battlingSkillId, onAwardLevel, onPhantomCaught }) => {
             {clicked && (
                 <div className="absolute inset-0 flex items-center justify-center">
                     <span className="text-yellow-400 text-2xl font-bold animate-bounce drop-shadow-[0_0_5px_rgba(255,215,0,0.8)]">
-                        +1 Level!
+                        {t('phantom.bonus')}
                     </span>
                 </div>
             )}

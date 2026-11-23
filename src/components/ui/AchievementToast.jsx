@@ -1,6 +1,7 @@
 import React from 'react';
 import { Trophy } from 'lucide-react';
 import { ACHIEVEMENTS, TIER_COLORS, TIER_NAMES } from '../../constants/achievements';
+import { t } from '../../i18n';
 
 /**
  * AchievementToast Component
@@ -51,10 +52,14 @@ const AchievementToast = ({ achievementId, tierIndex = null }) => {
                     {/* Text */}
                     <div className="text-left">
                         <h2 className="text-2xl text-yellow-400 font-bold leading-none mb-1 uppercase tracking-wide">
-                            ACHIEVEMENT UNLOCKED!
+                            {t('achievementToast.title')}
                         </h2>
                         <p className="text-white text-lg font-bold">{displayName}</p>
-                        {tierName && <p className="text-stone-400 text-sm mt-1">{tierName} Tier</p>}
+                        {tierName && (
+                            <p className="text-stone-400 text-sm mt-1">
+                                {t('achievementToast.tier', { tier: tierName })}
+                            </p>
+                        )}
                     </div>
                 </div>
 
